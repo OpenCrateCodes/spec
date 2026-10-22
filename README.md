@@ -7,7 +7,7 @@ what a track is and when to play it:
 09 DNB.LIQ E4 Drum & Bass (Liquid)
 ```
 
-See it on the site: https://opencratecodes.github.io/spec/
+See it on the site: https://opencratecodes.com
 
 - `index.html`: the guide for DJs (genres, tempo map, energy, labels, searches).
 - `spec.html`: the rules for software that reads and writes tags.
