@@ -95,7 +95,7 @@ input[type="search"] { font: inherit; color: var(--ink); background: var(--surfa
 @media (min-width: 600px) { .pick-top { grid-template-columns: auto 1fr; align-items: center; gap: 20px; } }
 
 /* Family tabs, cut like crate dividers: 4 across on phones, 6 across on wider screens. */
-.fam-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px 5px; align-items: end; }
+.fam-tabs { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 1fr; gap: 6px 5px; }
 @media (min-width: 600px) { .fam-tabs { grid-template-columns: repeat(6, 1fr); } }
 .fam-btn { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 58px; padding: 8px 9px 7px; border: 0; border-radius: 10px 10px 3px 3px; cursor: pointer; text-align: left; color: var(--ink-2); background: color-mix(in srgb, var(--fc) 16%, var(--surface)); box-shadow: inset 0 3px 0 var(--fc); font: 500 .78rem/1.15 var(--sans); }
 .fam-btn b { font: 700 .9rem var(--mono); color: var(--fc); }
