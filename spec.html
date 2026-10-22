@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Open Crate Codes spec</title>
+<meta name="description" content="How to read and write Open Crate Codes genre and energy tags: fields, grammar, codes, energy, labels and versioning.">
+<meta name="theme-color" content="#1B1E24">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400..700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="index.html" aria-label="Open Crate Codes home">
+      <svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="9" width="24" height="16" rx="3" fill="#2B3039"/><rect x="4" y="3" width="6" height="9" rx="2" fill="#4FD1E0"/><rect x="11" y="5" width="6" height="7" rx="2" fill="#F5D06A"/><rect x="18" y="2" width="5" height="10" rx="2" fill="#F28FB8"/></svg>
+      <span>Open Crate Codes</span>
+    </a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="index.html#genres">Genres</a></li>
+        <li><a href="index.html#energy">Energy</a></li>
+        <li><a href="spec.html" aria-current="page">Spec</a></li>
+        <li><a href="index.html#use">Download</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap doc">
+  <nav class="toc" aria-label="Contents">
+    <b>Contents</b>
+    <ol>
+      <li><a href="#scope">Scope</a></li>
+      <li><a href="#fields">Fields</a></li>
+      <li><a href="#grammar">The Album tag</a></li>
+      <li><a href="#reading">Reading</a></li>
+      <li><a href="#writing">Writing</a></li>
+      <li><a href="#codes">Codes and families</a></li>
+      <li><a href="#energy">Energy</a></li>
+      <li><a href="#labels">Labels</a></li>
+      <li><a href="#searching">Searching</a></li>
+      <li><a href="#tools">Other tools</a></li>
+      <li><a href="#versions">Versions</a></li>
+      <li><a href="#checklist">Checklist</a></li>
+      <li><a href="#license">License</a></li>
+    </ol>
+  </nav>
+
+  <article class="prose">
+    <span class="draft">1.0.0 draft</span>
+    <h1>Open Crate Codes spec</h1>
+    <p class="lede">How DJ software and scripts read and write Open Crate Codes tags. The genre list itself is in <a href="occ.toml">occ.toml</a> (and <a href="occ.json">occ.json</a>); this page is the rules around it.</p>
+    <p><span class="must">Must</span>, <span class="must">should</span> and <span class="must">may</span> are used in the sense of RFC 2119: must is a requirement, should is a strong recommendation with room for good reasons, may is optional.</p>
+
+    <h2 id="scope">1. Scope</h2>
+    <p>An Open Crate Codes tag records two things about a track: its genre, optionally narrowed to a style, and its energy within that genre. Optional labels record yes-or-no facts such as "has a vocal" or "from the 1990s".</p>
+    <ul>
+      <li>A track has exactly one genre. Pick the floor you'd play it on. If that's still a tie, use the genre the record label or the store filed it under.</li>
+      <li>A style is optional. Leave it off when you're not sure: the track still belongs to the genre.</li>
+      <li>Energy is optional. A track without one is unrated.</li>
+    </ul>
+
+    <h2 id="fields">2. Fields</h2>
+    <table>
+      <thead><tr><th scope="col">Field</th><th scope="col">Holds</th><th scope="col">Status</th></tr></thead>
+      <tbody>
+        <tr><td>Album</td><td>The tag, e.g. <code>09 DNB.LIQ E4 Drum &amp; Bass (Liquid)</code></td><td>Required</td></tr>
+        <tr><td>Genre</td><td>The genre's name without the style, e.g. <code>Drum &amp; Bass</code></td><td>Should</td></tr>
+        <tr><td>Comment</td><td>Labels as hashtags, e.g. <code>#vocal #1990s</code>, plus any other text</td><td>May</td></tr>
+        <tr><td>Track colour</td><td>The energy colour, in apps that store one</td><td>May</td></tr>
+      </tbody>
+    </table>
+    <p>Album is used because every DJ app reads, shows, sorts and filters it, and it travels with the file and with USB exports. That keeps Genre clean for browsing by genre on players.</p>
+    <div class="callout"><p>The cost: Album usually holds the release title. Writers <span class="must">should</span> keep the original value, in their own database or by putting it back when the user clears the tag.</p></div>
+
+    <h2 id="grammar">3. The Album tag</h2>
+    <pre>tag     = family " " code [ "." style ] [ " E" level ] " " name
+family  = 2 digits         ; 01–89 public, 90–99 private
+code    = 3 letters A–Z    ; private: X + 1–3 of A–Z, 0–9
+style   = 3 letters A–Z    ; private: as for codes
+level   = 1 digit          ; 1–5; unrated has no energy part
+name    = display text     ; genre name, then (style name)</pre>
+    <p>As a regular expression:</p>
+    <pre>^(\d{2}) ([A-Z0-9]{2,4})(?:\.([A-Z0-9]{2,4}))?(?: E(\d))? (.+)$</pre>
+    <table>
+      <thead><tr><th scope="col">Tag</th><th scope="col">Means</th></tr></thead>
+      <tbody>
+        <tr><td><code>09 DNB.LIQ E4 Drum &amp; Bass (Liquid)</code></td><td>Drum &amp; Bass, Liquid style, energy 4</td></tr>
+        <tr><td><code>05 THS E3 Tech House</code></td><td>Tech House, no style, energy 3</td></tr>
+        <tr><td><code>07 TPK.PST Peak Time / Driving Techno (Psy-Techno)</code></td><td>Psy-Techno, unrated</td></tr>
+        <tr><td><code>91 XAB E2 Sunday Edits</code></td><td>A private genre in a private family</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="reading">4. Reading</h2>
+    <ul>
+      <li>Trim the Album value and collapse runs of spaces to one, then match it against the expression above. A value that doesn't match isn't a tag: it's a release title. Leave it alone.</li>
+      <li>Identify the genre by its code, and the style by <code>code.style</code>. <span class="must">Must</span> ignore the name: it's display text and may be renamed between versions.</li>
+      <li>If the family number doesn't match the code's family in your version, still read the tag by its code.</li>
+      <li>An unknown code comes from a newer version or from someone's private additions. <span class="must">Must</span> keep the tag as it is. <span class="must">Should</span> show the code, and <span class="must">must not</span> clear or rewrite it without the user asking.</li>
+      <li>A deprecated code reads as normal. <span class="must">May</span> suggest its replacement; <span class="must">must not</span> change the file unless the user asks.</li>
+      <li>Energy outside 1–5 counts as unrated. Keep the text as it is.</li>
+      <li>Labels can be anywhere in Comment, because other tools add text before them. A label is a word that starts with <code>#</code> followed by a label's tag. Match it ignoring case and any punctuation after it, so <code>#Vocal,</code> reads as <code>#vocal</code>. Every other word is someone else's text.</li>
+    </ul>
+
+    <h2 id="writing">5. Writing</h2>
+    <ul>
+      <li><span class="must">Must</span> write exactly <code>family code[.style][ E</code><i>n</i><code>] name</code>, with single spaces and the names of the version you implement.</li>
+      <li><span class="must">Must not</span> write codes you don't know, except private codes the user defined. <span class="must">Must not</span> write deprecated codes for new tags.</li>
+      <li><span class="must">Should</span> write the genre's name, without the style, to the Genre field.</li>
+      <li>In Comment, <span class="must">must</span> keep text you didn't write. Write labels first, as <code>#tag</code> words separated by single spaces, followed by the rest. Only add or remove hashtags that are labels from this standard.</li>
+      <li><span class="must">Should</span> keep the release title that Album held before (see <a href="#fields">Fields</a>).</li>
+    </ul>
+
+    <h2 id="codes">6. Codes and families</h2>
+    <ul>
+      <li>Genre and style codes are 3 capital letters. Genre codes are unique. Style codes are unique within their genre.</li>
+      <li>One style code can sit under several genres when it means the same thing there: <code>MLD</code> is Melodic under Afro House and under Dubstep.</li>
+      <li>A style can reuse a genre's code when it means that genre's sound inside another genre, and then it has that genre's name. <code>DNB.HIP</code> is hip-hop drum &amp; bass, named Hip-Hop like the genre <code>HIP</code>.</li>
+      <li>Names never contain brackets, so the only brackets in a tag are around the style's name.</li>
+      <li><b>Codes are permanent.</b> A published code keeps its meaning and is never reused. A retired code is marked <code>deprecated</code>, with <code>use</code> naming its replacement, and stays readable.</li>
+      <li><b>Family numbers are permanent.</b> Moving a genre to another family is a major change (see <a href="#versions">Versions</a>).</li>
+      <li><b>Private range.</b> Codes starting with X and families 90–99 are for anyone's own additions. Public versions never use them. Two people's private codes may collide, so don't expect others to read them.</li>
+      <li><b>Searchable by design.</b> For every code, <code>NN CODE</code> (family number, a space, the code) appears in no other code's tag, and no name contains E followed by a digit. <code>tools/build.py</code> checks both.</li>
+    </ul>
+
+    <h2 id="energy">7. Energy</h2>
+    <p>Energy ranks a track within its own genre. E5 is the most intense end of that genre, not an absolute level: a Deep House E5 is calmer than a Hard Techno E1, and both are right.</p>
+    <table>
+      <thead><tr><th scope="col">Level</th><th scope="col">Name</th><th scope="col">Meaning</th><th scope="col">Colour</th></tr></thead>
+      <tbody>
+        <tr><td><code>E1</code></td><td>Opener</td><td>The quietest end of its genre: sparse, long intro, little tension.</td><td><code>#1E2BEA</code> Blue</td></tr>
+        <tr><td><code>E2</code></td><td>Warm-up</td><td>Steady and rolling, below the genre's usual drive.</td><td><code>#6EF0E4</code> Aqua</td></tr>
+        <tr><td><code>E3</code></td><td>Workhorse</td><td>The genre's normal full groove.</td><td><code>#67F04A</code> Green</td></tr>
+        <tr><td><code>E4</code></td><td>Lift</td><td>Above the genre's norm: a bigger drop, riff, vocal or build.</td><td><code>#F5A63A</code> Orange</td></tr>
+        <tr><td><code>E5</code></td><td>Peak weapon</td><td>The genre's most intense: anthem hooks, the biggest drops.</td><td><code>#E8382C</code> Red</td></tr>
+      </tbody>
+    </table>
+    <ul>
+      <li>Rate against the genre's reference tracks first, then against tracks already rated in that genre.</li>
+      <li>Most libraries end up with most tracks at E3 and few at E5. That's a result, not a rule.</li>
+      <li>Colours are optional. Apps that store a track colour <span class="must">should</span> use these; the names are Rekordbox's colour names.</li>
+      <li>Mixed In Key's energy (1–10) measures intensity across all music. It's a different scale: <span class="must">must not</span> be converted to or from this one.</li>
+    </ul>
+
+    <h2 id="labels">8. Labels</h2>
+    <p>Labels go in the Comment field as hashtags. Tags are lowercase. A track has at most one label from each group.</p>
+    <table>
+      <thead><tr><th scope="col">Group</th><th scope="col">Labels</th><th scope="col">Meaning</th></tr></thead>
+      <tbody>
+        <tr><td>Vocals</td><td><code>#vocal</code> <code>#inst</code> <code>#acapella</code></td><td>A vocal carries it; no lead vocal; vocal only</td></tr>
+        <tr><td>None</td><td><code>#tool</code> <code>#edit</code></td><td>Made for mixing (loops, drums, intros, FX); a DJ edit, bootleg or rework</td></tr>
+        <tr><td>Lyrics</td><td><code>#clean</code> <code>#explicit</code></td><td>Radio-safe; has explicit lyrics</td></tr>
+        <tr><td>Decade</td><td><code>#1920s</code> to <code>#2020s</code></td><td>When the song is from: the original, not the remix</td></tr>
+      </tbody>
+    </table>
+    <p>An edit keeps the genre of the music it edits, and adds <code>#edit</code>. An acapella keeps its genre, and adds <code>#acapella</code>. Neither is a genre of its own.</p>
+
+    <h2 id="searching">9. Searching</h2>
+    <p>Smart playlists and searches <span class="must">should</span> include the family number with the code. On its own, a code also finds untagged tracks whose release title contains it, like MIN in "Mind".</p>
+    <table>
+      <thead><tr><th scope="col">To find</th><th scope="col">Album contains</th></tr></thead>
+      <tbody>
+        <tr><td>A genre, with or without a style</td><td><code>09 DNB</code></td></tr>
+        <tr><td>One style</td><td><code>09 DNB.LIQ</code></td></tr>
+        <tr><td>A genre at one energy</td><td><code>09 DNB</code> and <code>E5</code>, both required</td></tr>
+      </tbody>
+    </table>
+    <p>Energy on its own (<code>E5</code>) is only safe combined with a genre condition. Codes are capitals, so it doesn't matter whether an app's search ignores case.</p>
+
+    <h2 id="tools">10. Working with other tools</h2>
+    <p>Open Crate Codes uses Album, Genre and hashtags in Comment. Other tools write to some of the same fields, so a few settings matter.</p>
+
+    <h3>Mixed In Key</h3>
+    <p>Mixed In Key measures key, BPM and an energy level from 1 to 10 across all music. That's a different question from this standard's energy, which is judged within a genre. Keep both, and <span class="must">must not</span> convert one into the other.</p>
+    <ul>
+      <li>In Settings, under Tag Options, write key and energy to Grouping, or in front of the comment. Both leave the labels in place.</li>
+      <li>Don't choose "Overwrite the comment": it deletes the labels.</li>
+    </ul>
+
+    <h3>Auto-taggers</h3>
+    <ul>
+      <li>Tools that fill in tags from stores and databases, such as OneTagger or MusicBrainz Picard, can overwrite Album with the release title. Turn off Album writing for tracks that already have a tag.</li>
+      <li>The crosswalk in <code>occ.toml</code> (<code>match.discogs</code>, <code>match.musicbrainz</code>, <code>match.everynoise</code>) lets a tool turn the genre it found into a suggested code. A person <span class="must">should</span> confirm it before it's written.</li>
+    </ul>
+
+    <h3>Rekordbox</h3>
+    <ul>
+      <li>Build the searches in <a href="#searching">section 9</a> as intelligent playlists on Album.</li>
+      <li>My Tag lives only in Rekordbox's own library, not in the file. Use it for personal notes if you like; Open Crate Codes tags go with the file to other apps and computers.</li>
+      <li>Rekordbox keeps track colour in its library rather than in the file. Set the energy colours there, or through its XML import: Blue, Aqua, Green, Orange and Red for E1 to E5.</li>
+    </ul>
+
+    <h3>Library managers</h3>
+    <p>Tools that sync a library between DJ apps, such as Lexicon, carry Album over with the rest of a track's details, so tags survive a move from one app to another. Check that any metadata clean-up feature leaves Album alone.</p>
+
+    <h2 id="versions">11. Versions</h2>
+    <p>The data files carry a <code>version</code>, numbered as <a href="https://semver.org/">semantic versions</a>. Every change is listed in <a href="CHANGELOG.md">CHANGELOG.md</a>.</p>
+    <table>
+      <thead><tr><th scope="col">Change</th><th scope="col">Examples</th></tr></thead>
+      <tbody>
+        <tr><td>Patch (1.0.x)</td><td>Definitions, reference tracks, crosswalk, BPM ranges</td></tr>
+        <tr><td>Minor (1.x.0)</td><td>New genres, styles or labels; renamed genres or styles; deprecations</td></tr>
+        <tr><td>Major (x.0.0)</td><td>Removing a code, changing what a code means, moving a genre to another family, renumbering a family, changing the tag format</td></tr>
+      </tbody>
+    </table>
+    <p>Tags written under any 1.x version read correctly under every later 1.x version.</p>
+
+    <h2 id="checklist">12. Checklist for app makers</h2>
+    <h3>Reading</h3>
+    <ul>
+      <li>Parses Album with the expression in <a href="#grammar">section 3</a>.</li>
+      <li>Identifies tags by code and ignores the name.</li>
+      <li>Keeps tags with unknown codes as they are.</li>
+      <li>Treats an Album that doesn't match as a release title.</li>
+      <li>Finds labels anywhere in Comment, ignoring case and trailing punctuation.</li>
+    </ul>
+    <h3>Writing</h3>
+    <ul>
+      <li>Writes the exact format, with the names of its version.</li>
+      <li>Never writes unknown or deprecated codes for new tags.</li>
+      <li>Keeps Comment text it didn't write.</li>
+      <li>Keeps the release title Album held before.</li>
+    </ul>
+    <h3>Showing</h3>
+    <ul>
+      <li>Explains energy as relative to the genre.</li>
+      <li>Shows the family number and code, so users can build the searches in <a href="#searching">section 9</a>.</li>
+    </ul>
+
+    <h2 id="license">13. License</h2>
+    <p>The data files (<code>occ.toml</code>, <code>occ.json</code>) are public domain under <a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>. Use the codes in any product, free or paid, without asking. This spec and the site's text are <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</p>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Open Crate Codes. Data CC0 1.0, text CC BY 4.0.</p>
+  </div>
+</footer>
+</body>
+</html>

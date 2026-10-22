@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Open Crate Codes: three genre dividers in family colours, standing in a crate. -->
+  <rect width="512" height="512" fill="#1B1E24"/>
+  <rect x="96" y="112" width="96" height="200" rx="22" fill="#4FD1E0"/>
+  <rect x="208" y="156" width="96" height="156" rx="22" fill="#F5D06A"/>
+  <rect x="320" y="84" width="96" height="228" rx="22" fill="#F28FB8"/>
+  <rect x="64" y="252" width="384" height="184" rx="34" fill="#363C47"/>
+  <rect x="196" y="300" width="120" height="30" rx="15" fill="#1B1E24"/>
+</svg>

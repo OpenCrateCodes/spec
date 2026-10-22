@@ -1,0 +1,14 @@
+Open Crate Codes
+
+Data and tools: CC0 1.0 Universal (public domain dedication)
+  occ.toml, occ.json, tools/build.py
+  To the extent possible under law, the authors have waived all copyright and related or
+  neighboring rights to these files. Use them in any product, free or paid, without asking.
+  Legal code: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+
+Text, site and logo: Creative Commons Attribution 4.0 International (CC BY 4.0)
+  spec.html, index.html, style.css, favicon.svg, README.md, CHANGELOG.md, brand/logo.svg,
+  brand/avatar-1024.png, and any other file in this repository not listed above
+  Copyright 2026 Open Crate Codes contributors
+  You may share and adapt these with attribution.
+  Legal code: https://creativecommons.org/licenses/by/4.0/legalcode

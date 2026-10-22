@@ -1,0 +1,1161 @@
+# Open Crate Codes: a genre and energy tagging standard for DJs.
+# Spec: spec.html. This file is the source of truth; occ.json is generated from it by tools/build.py.
+#
+# Apps read the keys they need. The rest (definition, bpm, not, match.*, hex) are there for people
+# and other tools, and are safe to ignore.
+
+standard = "Open Crate Codes"
+version = "1.0.0-draft"
+license = "CC0-1.0"
+
+# Energy ranks a track within its own genre, not against the whole library: E5 in Deep House is the
+# biggest Deep House track you own, not something as hard as Hard Techno. A track that isn't rated
+# yet gets no energy part at all.
+[[energy]]
+level = 1
+name = "Opener"
+description = "The quietest end of its genre: sparse, long intro, little tension. Opens a set or resets the room."
+colour = "Blue"
+hex = "#1E2BEA"
+
+[[energy]]
+level = 2
+name = "Warm-up"
+description = "Steady and rolling, below the genre's usual drive. Holds a floor without asking for a reaction."
+colour = "Aqua"
+hex = "#6EF0E4"
+
+[[energy]]
+level = 3
+name = "Workhorse"
+description = "The genre's normal full groove. Keeps a floor moving without a big moment."
+colour = "Green"
+hex = "#67F04A"
+
+[[energy]]
+level = 4
+name = "Lift"
+description = "Above the genre's norm: a bigger drop, riff, vocal or build. Raises the room."
+colour = "Orange"
+hex = "#F5A63A"
+
+[[energy]]
+level = 5
+name = "Peak weapon"
+description = "The genre's most intense: anthem hooks, the biggest drops. The moment of the night for that sound."
+colour = "Red"
+hex = "#E8382C"
+
+# Families group related genres. Their numbers start the Album tag, so sorting by Album keeps a
+# family together. Numbers are permanent. 01–09 run from the slowest typical tempo to the fastest;
+# 10–12 are crossover, open format and utility. 90–99 are for private families.
+# `bpm` is the span of the family's genres; tools/build.py checks it.
+[[family]]
+number = 1
+name = "Chill"
+bpm = "70–120"
+hex = "#8EA8F5"
+
+[[family]]
+number = 2
+name = "Afro & Organic"
+bpm = "108–150"
+hex = "#E8A05C"
+
+[[family]]
+number = 3
+name = "House"
+bpm = "110–128"
+hex = "#F5D06A"
+
+[[family]]
+number = 4
+name = "Melodic"
+bpm = "110–128"
+hex = "#C59BF0"
+
+[[family]]
+number = 5
+name = "Tech"
+bpm = "120–130"
+hex = "#6FD3B5"
+
+[[family]]
+number = 6
+name = "Breaks & UK"
+bpm = "120–160"
+hex = "#A3D977"
+
+[[family]]
+number = 7
+name = "Techno"
+bpm = "125–160"
+hex = "#AAB4C6"
+
+[[family]]
+number = 8
+name = "Trance & Hard"
+bpm = "130–200+"
+hex = "#F28FB8"
+
+[[family]]
+number = 9
+name = "Bass"
+bpm = "130–178"
+hex = "#4FD1E0"
+
+[[family]]
+number = 10
+name = "Crossover"
+bpm = "100–132"
+hex = "#FF8A7A"
+
+[[family]]
+number = 11
+name = "Open Format"
+hex = "#E7D8C3"
+
+[[family]]
+number = 12
+name = "Utility"
+hex = "#9C9CAB"
+
+# Genres. `code` is 3 capital letters, permanent, and never reused. `short` is the label inside
+# its family. `styles` are optional finer splits: a track is DNB, or DNB.LIQ for Liquid.
+#
+# `not` lists genres it's often confused with. `match.*` lists the matching names in other
+# catalogues, each checked against that catalogue: Discogs styles, MusicBrainz genres and Every
+# Noise at Once genres. `references` are "Artist – Title (energy)"; DJ tools have no energy, so
+# theirs have none.
+#
+# A style can reuse a genre's code when it means that genre's sound inside another one (DNB.HIP is
+# hip-hop drum & bass); it then has the same name.
+
+# 01 Chill
+[[genre]]
+code = "AMB"
+name = "Ambient / Experimental"
+short = "Ambient"
+family = "Chill"
+definition = "Beatless or barely-there rhythm: texture, drones and space rather than groove."
+not = ["ELC"]
+references = [
+  "Brian Eno – An Ending (Ascent) (1)",
+  "Global Communication – 14:31 (2)",
+  "The Orb – Little Fluffy Clouds (4)",
+]
+match.discogs = ["Ambient", "Dark Ambient", "Drone", "Experimental"]
+match.musicbrainz = ["ambient", "dark ambient", "drone"]
+match.everynoise = ["ambient", "experimental ambient", "dark ambient", "drone"]
+
+[[genre]]
+code = "DWN"
+name = "Downtempo"
+family = "Chill"
+bpm = "70–110"
+definition = "Slow, head-nodding beats with warm textures, from trip hop to chillout."
+not = ["ORG", "ELC"]
+references = [
+  "Portishead – Glory Box (2)",
+  "Massive Attack – Teardrop (3)",
+  "Bonobo – Kerala (4)",
+]
+match.discogs = ["Downtempo", "Trip Hop", "Chillwave"]
+match.musicbrainz = ["downtempo", "trip hop", "chillout"]
+match.everynoise = ["downtempo", "trip hop", "chillout"]
+
+[[genre]]
+code = "ELC"
+name = "Electronica"
+family = "Chill"
+bpm = "80–120"
+definition = "Listening-first electronic music with detailed, often broken or glitchy rhythms."
+not = ["DWN", "AMB"]
+references = [
+  "Boards of Canada – Roygbiv (2)",
+  "Caribou – Can't Do Without You (4)",
+  "Jon Hopkins – Open Eye Signal (5)",
+]
+match.discogs = ["IDM", "Leftfield", "Glitch"]
+match.musicbrainz = ["electronica", "idm", "glitch", "indietronica", "folktronica"]
+match.everynoise = ["electronica", "intelligent dance music", "glitch", "indietronica", "folktronica"]
+
+# 02 Afro & Organic
+[[genre]]
+code = "ORG"
+name = "Organic House"
+family = "Afro & Organic"
+bpm = "110–122"
+definition = "Unhurried house built on hand percussion, acoustic instruments and earthy, desert-tinged melody."
+not = ["AFH", "DWN"]
+references = [
+  "Nu feat. Jo.Ke – Who Loves the Sun (2)",
+  "Bedouin – Petra (3)",
+  "Sébastien Léger & Lost Miracle – Ramses (4)",
+]
+match.musicbrainz = ["organic house"]
+match.everynoise = ["organic house", "organic electronic"]
+
+[[genre]]
+code = "AFH"
+name = "Afro House"
+family = "Afro & Organic"
+bpm = "118–124"
+definition = "House driven by African percussion, chants and polyrhythm, from tribal to melodic."
+not = ["ORG", "AMP", "AFC"]
+styles = [{ code = "MLD", name = "Melodic" }, { code = "TST", name = "3-Step" }, { code = "TRB", name = "Tribal" }]
+references = [
+  "Culoe De Song – Webaba (2)",
+  "Black Coffee feat. Bucie – Superman (3)",
+  "Adam Port & Stryv feat. Malachiii – Move (5)",
+]
+match.discogs = ["Gqom", "Kwaito"]
+match.musicbrainz = ["afro house", "gqom", "3-step"]
+match.everynoise = ["afro house", "south african house", "gqom"]
+
+[[genre]]
+code = "AMP"
+name = "Amapiano"
+family = "Afro & Organic"
+bpm = "110–116"
+definition = "South African house with log-drum basslines, jazzy keys and shuffling, sparse drums."
+not = ["AFH"]
+references = [
+  "Tyla – Water (3)",
+  "Focalistic & Davido – Ke Star (Remix) (4)",
+  "Uncle Waffles & Tony Duardo feat. Sino Msolo & BoiBizza – Tanzania (5)",
+]
+match.discogs = ["Amapiano"]
+match.musicbrainz = ["amapiano"]
+match.everynoise = ["amapiano"]
+
+[[genre]]
+code = "LTE"
+name = "Latin Electronic"
+family = "Afro & Organic"
+bpm = "108–132"
+definition = "Club music built on Latin rhythms: guaracha, moombahton, electronic cumbia, raptor house."
+not = ["LTN", "THS"]
+styles = [{ code = "GRC", name = "Tribal / Guaracha" }, { code = "CMB", name = "Electronic Cumbia" }, { code = "MBT", name = "Moombahton" }, { code = "RPT", name = "Raptor House" }]
+references = [
+  "Bomba Estéreo – Fuego (3)",
+  "3Ball MTY feat. América Sierra & El Bebeto – Inténtalo (4)",
+  "Dillon Francis & Diplo feat. Maluca – Que Que (5)",
+]
+match.discogs = ["Moombahton", "Guaracha", "Tribal House"]
+match.musicbrainz = ["moombahton", "guaracha", "tribal guarachero", "tribal house", "latin house"]
+match.everynoise = ["moombahton", "guaracha", "tribal house", "latin house"]
+
+[[genre]]
+code = "BRF"
+name = "Brazilian Funk"
+family = "Afro & Organic"
+bpm = "125–150"
+definition = "Baile funk from Rio and São Paulo: tamborzão and beatbox drums, chopped vocals, heavy bass."
+references = [
+  "MC Marcinho – Glamurosa (2)",
+  "MC Fioti – Bum Bum Tam Tam (4)",
+  "MC Kevin o Chris feat. FP do Trem Bala – Vamos pra Gaiola (5)",
+]
+match.discogs = ["Favela Funk"]
+match.musicbrainz = ["funk carioca", "brega funk", "funk mandelão"]
+match.everynoise = ["funk carioca", "funk mtg", "funk paulista", "funk mandelao", "brega funk"]
+
+# 03 House
+[[genre]]
+code = "DHS"
+name = "Deep House"
+short = "Deep"
+family = "House"
+bpm = "118–124"
+definition = "Warm, soulful house with rich chords, round bass and restraint over impact."
+not = ["HSE", "MIN"]
+references = [
+  "Mr. Fingers – Can You Feel It (2)",
+  "Kerri Chandler – Rain (3)",
+  "Kerri Chandler – Bar A Thym (4)",
+]
+match.discogs = ["Deep House"]
+match.musicbrainz = ["deep house", "lo-fi house"]
+match.everynoise = ["deep house", "lo-fi house"]
+
+[[genre]]
+code = "HSE"
+name = "House"
+family = "House"
+bpm = "120–126"
+definition = "The four-to-the-floor core: piano, vocals and grooves from Chicago and New York onward."
+not = ["DHS", "FNK", "JCK"]
+styles = [{ code = "ACD", name = "Acid" }, { code = "SFL", name = "Soulful" }, { code = "HIP", name = "Hip-Hop" }]
+references = [
+  "Frankie Knuckles – Your Love (3)",
+  "Crystal Waters – Gypsy Woman (She's Homeless) (4)",
+  "Robin S – Show Me Love (Stonebridge Remix) (5)",
+]
+match.discogs = ["House", "Acid House", "Garage House", "Hip-House", "Ghetto House"]
+match.musicbrainz = ["house", "chicago house", "acid house", "vocal house", "garage house", "hip house"]
+match.everynoise = ["house", "chicago house", "acid house", "classic house", "soulful house", "vocal house", "garage house", "hip house"]
+
+[[genre]]
+code = "NUD"
+name = "Nu Disco / Disco"
+short = "Nu Disco"
+family = "House"
+bpm = "110–124"
+definition = "Disco and its modern descendants: live bass, strings, filtered loops and edits."
+not = ["IDC", "SOL"]
+styles = [{ code = "DSC", name = "Disco" }, { code = "ITL", name = "Italo" }]
+references = [
+  "Breakbot feat. Irfane – Baby I'm Yours (3)",
+  "Purple Disco Machine – Hypnotized (4)",
+  "Todd Terje – Inspector Norse (5)",
+]
+match.discogs = ["Nu-Disco", "Disco", "Italo-Disco", "Euro-Disco", "Hi NRG"]
+match.musicbrainz = ["nu disco", "disco", "italo-disco"]
+match.everynoise = ["nu disco", "disco", "italo disco", "post-disco", "disco house"]
+
+[[genre]]
+code = "FNK"
+name = "Funky House"
+short = "Funky"
+family = "House"
+bpm = "122–126"
+definition = "Upbeat, sample-heavy house with funk and disco loops, horns and big vocal hooks."
+not = ["JCK", "HSE"]
+references = [
+  "Spiller – Groovejet (If This Ain't Love) (3)",
+  "Modjo – Lady (Hear Me Tonight) (4)",
+  "Stardust – Music Sounds Better With You (5)",
+]
+match.musicbrainz = ["funky house"]
+match.everynoise = ["funky house", "funky tech house"]
+
+[[genre]]
+code = "JCK"
+name = "Jackin House"
+short = "Jackin"
+family = "House"
+bpm = "122–128"
+definition = "Bouncy, swung, bass-forward house made to jack to, with chopped vocal samples."
+not = ["FNK", "THS"]
+references = [
+  "Steve \"Silk\" Hurley – Jack Your Body (2)",
+  "Waze & Odyssey vs R. Kelly – Bump & Grind 2014 (3)",
+  "Paul Johnson – Get Get Down (4)",
+]
+match.musicbrainz = ["jackin house"]
+match.everynoise = ["jackin house"]
+
+# 04 Melodic
+[[genre]]
+code = "PRG"
+name = "Progressive House"
+short = "Progressive"
+family = "Melodic"
+bpm = "120–126"
+definition = "Long, evolving house that builds through layered melody and patient arrangement."
+not = ["MHT"]
+references = [
+  "Sasha – Xpander (3)",
+  "Deadmau5 – Strobe (4)",
+  "Eric Prydz – Opus (5)",
+]
+match.discogs = ["Progressive House"]
+match.musicbrainz = ["progressive house"]
+match.everynoise = ["progressive house", "deep progressive house"]
+
+[[genre]]
+code = "MHT"
+name = "Melodic House & Techno"
+short = "Melodic H&T"
+family = "Melodic"
+bpm = "118–125"
+definition = "Emotive, synth-led house and techno: arpeggios, big pads, dark or euphoric melody."
+not = ["PRG", "TRW"]
+styles = [{ code = "MLH", name = "Melodic House" }, { code = "MLT", name = "Melodic Techno" }]
+references = [
+  "Rüfüs Du Sol – Innerbloom (2)",
+  "Kölsch – Grey (3)",
+  "Stephan Bodzin – Powers of Ten (4)",
+]
+match.musicbrainz = ["melodic techno", "melodic house"]
+match.everynoise = ["melodic techno", "minimal melodic techno"]
+
+[[genre]]
+code = "IDC"
+name = "Indie Dance"
+family = "Melodic"
+bpm = "110–124"
+definition = "Dance music with an indie and post-punk edge: live-sounding bass, dark disco, synth-pop."
+not = ["ITC", "NUD"]
+styles = [{ code = "DKD", name = "Dark Disco" }]
+references = [
+  "Röyksopp – What Else Is There? (Trentemøller Remix) (2)",
+  "Simian Mobile Disco – Hustler (3)",
+  "Tiga & Zyntherius – Sunglasses at Night (4)",
+]
+match.discogs = ["Electroclash"]
+match.musicbrainz = ["dark disco", "electroclash", "dance-punk", "new rave"]
+match.everynoise = ["dark disco", "electroclash", "dance-punk", "new rave"]
+
+[[genre]]
+code = "STT"
+name = "Stutter House"
+short = "Stutter"
+family = "Melodic"
+bpm = "118–128"
+definition = "Wistful, filtered house with stuttering, chopped vocal loops and a nostalgic haze."
+not = ["IDC", "FNK"]
+references = [
+  "BUNT. feat. Nate Traveller – Clouds (2)",
+  "Fred again.. & The Blessed Madonna – Marea (We've Lost Dancing) (3)",
+  "Fred again.. & Swedish House Mafia feat. Future – Turn On the Lights again.. (4)",
+]
+match.musicbrainz = ["stutter house"]
+match.everynoise = ["stutter house"]
+
+# 05 Tech
+[[genre]]
+code = "MIN"
+name = "Minimal / Deep Tech"
+short = "Minimal / Deep"
+family = "Tech"
+bpm = "120–128"
+definition = "Stripped, groove-first house and techno: clicks, micro-edits and rolling basslines."
+not = ["DHS", "THS"]
+references = [
+  "Ricardo Villalobos – Easy Lee (2)",
+  "Ricardo Villalobos – Dexter (3)",
+  "Audion – Mouth to Mouth (5)",
+]
+match.discogs = ["Minimal", "Minimal Techno", "Microhouse"]
+match.musicbrainz = ["minimal techno", "microhouse", "deep tech", "rominimal"]
+match.everynoise = ["minimal techno", "microhouse", "minimal tech house", "rominimal"]
+
+[[genre]]
+code = "THS"
+name = "Tech House"
+family = "Tech"
+bpm = "124–130"
+definition = "House groove with techno's punch: tight drums, rolling bass and hooky vocal cuts."
+not = ["MIN", "ITC", "JCK"]
+styles = [{ code = "LTT", name = "Latin Tech" }]
+references = [
+  "Patrick Topping – Forget (3)",
+  "Green Velvet – La La Land (4)",
+  "Fisher – Losing It (5)",
+]
+match.discogs = ["Tech House"]
+match.musicbrainz = ["tech house"]
+match.everynoise = ["tech house", "latin tech house", "deep tech house"]
+
+[[genre]]
+code = "ITC"
+name = "Indie Tech"
+family = "Tech"
+bpm = "124–130"
+definition = "Indie dance's heavier, glossier cousin: punchy drums, bold synth hooks, festival weight."
+not = ["IDC", "THS"]
+references = [
+  "Mita Gami – Looking For You (2)",
+  "Adam Ten – I Never Knew (3)",
+  "Max Styler – Body Shake (5)",
+]
+
+# 06 Breaks & UK
+[[genre]]
+code = "BHS"
+name = "Bass House"
+family = "Breaks & UK"
+bpm = "124–128"
+definition = "House with bassline and dubstep weight: wobbling, growling bass under a 4/4 groove."
+not = ["UKG", "HSE"]
+references = [
+  "Chris Lorenzo – California Dreamin' (3)",
+  "Jauz – Feel the Volume (4)",
+  "Joyryde – Hot Drum (5)",
+]
+match.musicbrainz = ["bass house"]
+match.everynoise = ["bass house"]
+
+[[genre]]
+code = "UKG"
+name = "UK Garage / Bassline"
+short = "UK Garage"
+family = "Breaks & UK"
+bpm = "128–140"
+definition = "Shuffled, swung UK club music: 2-step skips, chopped vocals, speed garage and bassline."
+not = ["BHS", "BRK"]
+styles = [{ code = "STP", name = "2-Step" }, { code = "BSL", name = "Bassline" }, { code = "SPG", name = "Speed Garage" }, { code = "HIP", name = "Hip-Hop" }]
+references = [
+  "Double 99 – Ripgroove (5)",
+  "Todd Edwards – Saved My Life (2)",
+  "MJ Cole – Sincere (1)",
+  "Artful Dodger feat. Craig David – Re-Rewind (5)",
+]
+match.discogs = ["UK Garage", "Speed Garage", "Bassline", "UK Funky"]
+match.musicbrainz = ["uk garage", "2-step", "bassline", "speed garage", "future garage", "uk funky"]
+match.everynoise = ["uk garage", "2-step", "bassline", "speed garage", "future garage", "uk funky"]
+
+[[genre]]
+code = "BRK"
+name = "Breaks / Breakbeat / UK Bass"
+short = "Breaks"
+family = "Breaks & UK"
+bpm = "125–140"
+definition = "Broken, sampled drum breaks instead of a straight kick, from big beat to UK bass."
+not = ["ETR", "UKG"]
+styles = [{ code = "UKB", name = "UK Bass" }]
+references = [
+  "Bicep – Glue (2)",
+  "Fatboy Slim – Right Here, Right Now (4)",
+  "The Chemical Brothers – Block Rockin' Beats (5)",
+]
+match.discogs = ["Breakbeat", "Breaks", "Big Beat", "Progressive Breaks"]
+match.musicbrainz = ["breakbeat", "breaks", "nu skool breaks", "big beat", "florida breaks"]
+match.everynoise = ["breakbeat", "breaks", "nu skool breaks", "big beat", "uk bass"]
+
+[[genre]]
+code = "ETR"
+name = "Electro"
+family = "Breaks & UK"
+bpm = "120–135"
+definition = "Robotic, syncopated 808 drums and sci-fi synths, from Detroit and Miami bass onward."
+not = ["BRK"]
+references = [
+  "Drexciya – Andreaen Sand Dunes (2)",
+  "Cybotron – Clear (3)",
+  "Egyptian Lover – Egypt, Egypt (4)",
+]
+match.discogs = ["Electro", "Miami Bass"]
+match.musicbrainz = ["electro", "miami bass"]
+match.everynoise = ["electro", "miami bass"]
+
+[[genre]]
+code = "BCL"
+name = "Bass / Club"
+family = "Breaks & UK"
+bpm = "130–160"
+definition = "Regional club styles built on chopped samples and kicks: Jersey, Baltimore, footwork, ghettotech."
+not = ["BRK"]
+references = [
+  "DJ Rashad feat. Spinn & Taso – Feelin (2)",
+  "Rod Lee – Dance My Pain Away (3)",
+  "Cookiee Kawaii – Vibe (If I Back It Up) (4)",
+]
+match.discogs = ["Baltimore Club", "Jersey Club", "Footwork", "Juke", "Ghettotech"]
+match.musicbrainz = ["jersey club", "baltimore club", "footwork", "juke", "ghettotech"]
+match.everynoise = ["jersey club", "footwork", "ghettotech"]
+
+# 07 Techno
+[[genre]]
+code = "TRW"
+name = "Raw / Deep / Hypnotic Techno"
+short = "Raw / Hypnotic"
+family = "Techno"
+bpm = "125–138"
+definition = "Techno that works by repetition: hypnotic loops, dub space, rough and deep textures."
+not = ["TPK", "TRH", "MHT"]
+styles = [{ code = "HYP", name = "Hypnotic" }, { code = "DBT", name = "Dub Techno" }]
+references = [
+  "Basic Channel – Phylyps Trak (2)",
+  "Rrose – Waterfall (3)",
+  "Ben Klock – Subzero (4)",
+  "Plastikman – Spastik (5)",
+]
+match.discogs = ["Dub Techno", "Deep Techno"]
+match.musicbrainz = ["dub techno", "deep techno", "ambient techno"]
+match.everynoise = ["hypnotic techno", "dub techno", "deep techno", "raw techno", "ambient techno"]
+
+[[genre]]
+code = "TPK"
+name = "Peak Time / Driving Techno"
+short = "Peak / Driving"
+family = "Techno"
+bpm = "128–140"
+definition = "Big-room techno: driving kicks, tension and release, built for the main floor."
+not = ["TRW", "HTK"]
+styles = [{ code = "PST", name = "Psy-Techno" }]
+references = [
+  "Joris Voorn – Incident (3)",
+  "Adam Beyer & Bart Skils – Your Mind (5)",
+  "Jeff Mills – The Bells (5)",
+]
+match.discogs = ["Techno"]
+match.musicbrainz = ["techno", "peak time techno"]
+match.everynoise = ["techno", "german techno"]
+
+[[genre]]
+code = "HTK"
+name = "Hard Techno"
+short = "Hard"
+family = "Techno"
+bpm = "140–160"
+definition = "Fast, distorted, relentless techno: industrial kicks, schranz loops, rave stabs."
+not = ["TPK", "HRD"]
+references = [
+  "Sara Landry & Alt8 – Heaven (3)",
+  "Marco Leckbert – Schranz Will Never Die (4)",
+  "Klangkuenstler & Sant – Toter Schmetterling (5)",
+]
+match.discogs = ["Hard Techno", "Schranz"]
+match.musicbrainz = ["hard techno", "industrial techno", "schranz", "acid techno"]
+match.everynoise = ["hard techno", "industrial techno", "schranz", "acid techno", "hardgroove"]
+
+# 08 Trance & Hard
+[[genre]]
+code = "TRH"
+name = "Raw / Deep / Hypnotic Trance"
+short = "Raw / Hypnotic"
+family = "Trance & Hard"
+bpm = "130–145"
+definition = "Underground trance: rolling, hypnotic and dark, closer to techno than to anthems."
+not = ["TRW", "TMF"]
+references = [
+  "Jam & Spoon – Stella (2)",
+  "Age of Love – The Age of Love (Jam & Spoon Watch Out for Stella Mix) (3)",
+  "KI/KI – 5 Mins of Acid (5)",
+]
+match.musicbrainz = ["dream trance"]
+match.everynoise = ["dream trance"]
+
+[[genre]]
+code = "TMF"
+name = "Main Floor Trance"
+short = "Main Floor"
+family = "Trance & Hard"
+bpm = "132–140"
+definition = "Euphoric, melodic trance: long breakdowns, supersaw leads and big vocal anthems."
+not = ["TRH", "PSY"]
+styles = [{ code = "UPL", name = "Uplifting" }, { code = "PGT", name = "Progressive" }, { code = "TCT", name = "Tech Trance" }, { code = "VCL", name = "Vocal" }]
+references = [
+  "Robert Miles – Children (2)",
+  "ATB – 9 PM (Till I Come) (4)",
+  "Paul van Dyk – For an Angel (5)",
+]
+match.discogs = ["Trance", "Progressive Trance", "Tech Trance"]
+match.musicbrainz = ["trance", "progressive trance", "tech trance", "vocal trance"]
+match.everynoise = ["trance", "uplifting trance", "progressive trance", "tech trance", "vocal trance"]
+
+[[genre]]
+code = "PSY"
+name = "Psy-Trance"
+short = "Psy"
+family = "Trance & Hard"
+bpm = "138–148"
+definition = "Psychedelic trance: rolling 16th-note basslines, twisting acid and alien sound design."
+not = ["TMF"]
+styles = [{ code = "FUL", name = "Full-On" }, { code = "PPS", name = "Progressive Psy" }, { code = "DKF", name = "Dark & Forest" }, { code = "GOA", name = "Goa" }]
+references = [
+  "Astrix – Deep Jungle Walk (4)",
+  "Vini Vici – The Tribe (4)",
+  "Infected Mushroom – Becoming Insane (5)",
+]
+match.discogs = ["Psy-Trance", "Goa Trance"]
+match.musicbrainz = ["psytrance", "full-on", "progressive psytrance", "dark psytrance", "forest psytrance", "goa trance"]
+match.everynoise = ["psychedelic trance", "full on", "progressive psytrance", "dark psytrance", "forest psy", "goa trance"]
+
+[[genre]]
+code = "HRD"
+name = "Hard Dance / Hardcore / Neo Rave"
+short = "Hard Dance"
+family = "Trance & Hard"
+bpm = "140–200+"
+definition = "The hard end: hardstyle's reverse bass, hardcore and gabber kicks, uptempo, neo rave."
+not = ["HTK"]
+styles = [{ code = "HST", name = "Hardstyle" }, { code = "HCR", name = "Hardcore" }, { code = "UPT", name = "Uptempo" }, { code = "NRV", name = "Neo Rave" }]
+references = [
+  "Paul Elstak – Rainbow in the Sky (3)",
+  "Scooter – Maria (I Like It Loud) (4)",
+  "Headhunterz – Dragonborn (5)",
+]
+match.discogs = ["Hardstyle", "Hardcore", "Gabber", "Happy Hardcore"]
+match.musicbrainz = ["hardstyle", "hardcore techno", "uptempo hardcore", "frenchcore", "rawstyle", "gabber", "happy hardcore", "neo rave"]
+match.everynoise = ["hardstyle", "hardcore techno", "uptempo hardcore", "frenchcore", "rawstyle", "gabber", "happy hardcore", "hard dance"]
+
+# 09 Bass
+[[genre]]
+code = "DDG"
+name = "140 / Deep Dubstep / Grime"
+short = "140 / Grime"
+family = "Bass"
+bpm = "138–142"
+definition = "Dark, spacious 140: sub-bass pressure and half-time drums, plus grime's MC-led energy."
+not = ["DBS"]
+styles = [{ code = "GRM", name = "Grime" }]
+references = [
+  "Digital Mystikz – Anti-War Dub (2)",
+  "Skream – Midnight Request Line (3)",
+  "Dizzee Rascal – I Luv U (4)",
+]
+match.discogs = ["Grime"]
+match.musicbrainz = ["grime"]
+match.everynoise = ["deep dubstep", "grime"]
+
+[[genre]]
+code = "DBS"
+name = "Dubstep"
+family = "Bass"
+bpm = "140–150"
+definition = "Half-time drops with aggressive, designed bass: brostep, riddim, tearout, melodic."
+not = ["DDG", "TRP"]
+styles = [{ code = "RDM", name = "Riddim" }, { code = "MLD", name = "Melodic" }, { code = "HIP", name = "Hip-Hop" }]
+references = [
+  "Flight Facilities feat. Giselle – Crave You (Adventure Club Remix) (2)",
+  "Flux Pavilion – I Can't Stop (4)",
+  "Skrillex – Scary Monsters and Nice Sprites (5)",
+]
+match.discogs = ["Dubstep"]
+match.musicbrainz = ["dubstep", "brostep", "riddim dubstep", "melodic dubstep", "deathstep", "tearout"]
+match.everynoise = ["dubstep", "brostep", "riddim dubstep", "melodic dubstep", "deathstep", "tearout"]
+
+[[genre]]
+code = "TRP"
+name = "Trap / Future Bass"
+short = "Trap / Future"
+family = "Bass"
+bpm = "130–160"
+definition = "EDM trap's 808s and hi-hat rolls, and future bass's lush, pitch-bent supersaw chords."
+not = ["DBS", "HIP"]
+references = [
+  "San Holo – Light (2)",
+  "Flume feat. Kai – Never Be Like You (3)",
+  "Baauer – Harlem Shake (5)",
+]
+match.discogs = ["Future Bass"]
+match.musicbrainz = ["trap edm", "future bass", "wave"]
+match.everynoise = ["future bass", "wave"]
+
+[[genre]]
+code = "DNB"
+name = "Drum & Bass"
+family = "Bass"
+bpm = "165–178"
+definition = "Fast breakbeats over heavy sub-bass, from liquid and rollers to jump-up, neuro and jungle."
+not = ["DBS"]
+styles = [{ code = "LIQ", name = "Liquid" }, { code = "ROL", name = "Rollers" }, { code = "JMP", name = "Jump-up" }, { code = "NRF", name = "Neurofunk" }, { code = "JGL", name = "Jungle" }, { code = "HIP", name = "Hip-Hop" }]
+references = [
+  "Goldie – Inner City Life (2)",
+  "High Contrast – If We Ever (3)",
+  "Sub Focus – Timewarp (4)",
+  "Chase & Status & Bou – Baddadan (5)",
+]
+match.discogs = ["Drum n Bass", "Jungle", "Halftime"]
+match.musicbrainz = ["drum and bass", "liquid funk", "jump up", "neurofunk", "jungle"]
+match.everynoise = ["drum and bass", "liquid funk", "jump up", "neurofunk", "jungle", "dancefloor dnb", "uk dnb"]
+
+# 10 Crossover
+[[genre]]
+code = "DPO"
+name = "Dance / Pop"
+family = "Crossover"
+bpm = "100–128"
+definition = "Radio-ready dance music: pop songs over club beats, slap house, eurodance."
+not = ["POP", "MSG"]
+references = [
+  "Calvin Harris – Feel So Close (3)",
+  "SAINt JHN – Roses (Imanbek Remix) (4)",
+  "David Guetta feat. Sia – Titanium (5)",
+]
+match.discogs = ["Dance-pop", "Eurodance", "Euro House", "Italodance"]
+match.musicbrainz = ["dance-pop", "slap house", "eurodance"]
+match.everynoise = ["dance pop", "pop dance", "slap house", "eurodance"]
+
+[[genre]]
+code = "MSG"
+name = "Mainstage"
+family = "Crossover"
+bpm = "126–132"
+definition = "Festival EDM: big room drops, electro house leads, future house and future rave."
+not = ["DPO"]
+styles = [{ code = "BGR", name = "Big Room" }, { code = "FHS", name = "Future House" }, { code = "FRV", name = "Future Rave" }]
+references = [
+  "Oliver Heldens & Becky Hill – Gecko (Overdrive) (4)",
+  "Swedish House Mafia – Don't You Worry Child (4)",
+  "Martin Garrix – Animals (5)",
+]
+match.discogs = ["Electro House", "Future House"]
+match.musicbrainz = ["big room house", "edm", "future house", "electro house", "complextro", "future rave"]
+match.everynoise = ["big room", "edm", "future house", "electro house", "complextro"]
+
+# 11 Open Format
+[[genre]]
+code = "HIP"
+name = "Hip-Hop"
+family = "Open Format"
+definition = "Rap and its production styles, old school to drill. Hip-hop inside a club genre is that genre's .HIP style instead, like DNB.HIP."
+not = ["TRP", "RNB"]
+styles = [{ code = "OSK", name = "Old School" }, { code = "DRL", name = "Drill" }]
+references = [
+  "The Notorious B.I.G. – Juicy (2)",
+  "Outkast – Ms. Jackson (3)",
+  "Kendrick Lamar – HUMBLE. (4)",
+  "Missy Elliott – Get Ur Freak On (5)",
+]
+match.discogs = ["Hip Hop", "Boom Bap", "Drill", "Trap", "Conscious", "Gangsta", "Jazzy Hip-Hop"]
+match.musicbrainz = ["hip hop", "old school hip hop", "east coast hip hop", "boom bap", "trap", "drill", "uk drill"]
+match.everynoise = ["hip hop", "rap", "old school hip hop", "east coast hip hop", "boom bap", "trap", "drill", "uk drill"]
+
+[[genre]]
+code = "RNB"
+name = "R&B"
+family = "Open Format"
+definition = "Contemporary rhythm and blues: smooth vocals over hip-hop and pop production."
+not = ["SOL", "HIP"]
+references = [
+  "SZA – Kill Bill (2)",
+  "Destiny's Child – Say My Name (3)",
+  "Usher feat. Lil Jon & Ludacris – Yeah! (5)",
+]
+match.discogs = ["RnB/Swing"]
+match.musicbrainz = ["r&b", "contemporary r&b"]
+match.everynoise = ["r&b", "contemporary r&b", "urban contemporary"]
+
+[[genre]]
+code = "POP"
+name = "Pop"
+family = "Open Format"
+definition = "Mainstream pop songs, from the charts and the singalong canon."
+not = ["DPO"]
+references = [
+  "Harry Styles – As It Was (3)",
+  "Dua Lipa – Levitating (4)",
+  "Whitney Houston – I Wanna Dance with Somebody (Who Loves Me) (5)",
+]
+match.discogs = ["Synth-pop"]
+match.musicbrainz = ["pop"]
+match.everynoise = ["pop"]
+
+[[genre]]
+code = "LTN"
+name = "Latin"
+family = "Open Format"
+definition = "Latin American song and dance music: reggaeton, bachata, salsa, cumbia, merengue, dembow."
+not = ["LTE"]
+styles = [{ code = "RGT", name = "Reggaeton" }, { code = "BCH", name = "Bachata" }, { code = "SLS", name = "Salsa" }, { code = "CMB", name = "Cumbia" }, { code = "MRG", name = "Merengue" }, { code = "DMB", name = "Dembow" }]
+references = [
+  "Romeo Santos – Propuesta Indecente (2)",
+  "Marc Anthony – Vivir Mi Vida (4)",
+  "Bad Bunny – Tití Me Preguntó (4)",
+  "Daddy Yankee – Gasolina (5)",
+]
+match.discogs = ["Reggaeton", "Bachata", "Salsa", "Cumbia", "Merengue"]
+match.musicbrainz = ["reggaeton", "bachata", "salsa", "cumbia", "merengue", "dembow", "latin pop"]
+match.everynoise = ["reggaeton", "bachata", "salsa", "cumbia", "merengue", "dembow", "latin pop", "urbano latino"]
+
+[[genre]]
+code = "CAR"
+name = "Caribbean"
+family = "Open Format"
+definition = "Island music for the dance: dancehall, soca and reggae."
+not = ["AFC"]
+styles = [{ code = "DHL", name = "Dancehall" }, { code = "SOC", name = "Soca" }, { code = "RGE", name = "Reggae" }]
+references = [
+  "Bob Marley & The Wailers – Could You Be Loved (3)",
+  "Sean Paul – Get Busy (4)",
+  "Kes – Hello (4)",
+]
+match.discogs = ["Dancehall", "Soca", "Reggae", "Roots Reggae"]
+match.musicbrainz = ["dancehall", "soca", "reggae", "roots reggae", "lovers rock"]
+match.everynoise = ["dancehall", "soca", "reggae", "roots reggae", "lovers rock"]
+
+[[genre]]
+code = "AFC"
+name = "African"
+family = "Open Format"
+definition = "Popular music from across Africa: Afrobeats, afropop, afroswing, highlife."
+not = ["AFH", "CAR"]
+styles = [{ code = "AFB", name = "Afrobeats" }]
+references = [
+  "CKay – Love Nwantiti (2)",
+  "Burna Boy – Ye (3)",
+  "Burna Boy – Last Last (4)",
+]
+match.discogs = ["Afrobeat", "Highlife"]
+match.musicbrainz = ["afrobeats", "afroswing", "afrobeat", "highlife"]
+match.everynoise = ["afrobeats", "afropop", "afroswing", "afrobeat", "highlife"]
+
+[[genre]]
+code = "CTY"
+name = "Country"
+family = "Open Format"
+definition = "Country songs, from line-dance staples to country pop."
+references = [
+  "Luke Combs – Fast Car (2)",
+  "Billy Ray Cyrus – Achy Breaky Heart (4)",
+  "Shania Twain – Man! I Feel Like a Woman! (5)",
+]
+match.discogs = ["Country"]
+match.musicbrainz = ["country", "contemporary country", "country pop"]
+match.everynoise = ["country", "contemporary country", "country pop"]
+
+[[genre]]
+code = "RCK"
+name = "Rock"
+family = "Open Format"
+definition = "Guitar-band rock, from classic rock to punk and metal."
+not = ["ALT"]
+styles = [{ code = "CLR", name = "Classic Rock" }, { code = "PNK", name = "Punk" }, { code = "MTL", name = "Metal" }]
+references = [
+  "Fleetwood Mac – Dreams (2)",
+  "Bon Jovi – Livin' on a Prayer (4)",
+  "Queen – Don't Stop Me Now (5)",
+]
+match.discogs = ["Classic Rock", "Hard Rock", "Punk", "Heavy Metal"]
+match.musicbrainz = ["rock", "classic rock", "hard rock", "punk", "metal"]
+match.everynoise = ["rock", "classic rock", "hard rock", "punk", "metal"]
+
+[[genre]]
+code = "SOL"
+name = "Funk / Soul"
+family = "Open Format"
+definition = "Soul, funk and their descendants: Motown, boogie and neo soul."
+not = ["RNB", "NUD"]
+styles = [{ code = "MTW", name = "Motown" }, { code = "BGE", name = "Boogie" }, { code = "NSL", name = "Neo Soul" }]
+references = [
+  "Al Green – Let's Stay Together (2)",
+  "Stevie Wonder – Superstition (4)",
+  "James Brown – Get Up (I Feel Like Being a) Sex Machine (5)",
+]
+match.discogs = ["Funk", "Soul", "Boogie", "Neo Soul"]
+match.musicbrainz = ["funk", "soul", "motown", "boogie", "neo soul"]
+match.everynoise = ["funk", "soul", "motown", "boogie", "neo soul", "classic soul"]
+
+[[genre]]
+code = "ALT"
+name = "Indie / Alternative"
+family = "Open Format"
+definition = "Indie and alternative rock and pop: the indie-disco and Britpop singalong canon."
+not = ["RCK", "IDC"]
+references = [
+  "Oasis – Wonderwall (2)",
+  "Franz Ferdinand – Take Me Out (4)",
+  "The Killers – Mr. Brightside (5)",
+]
+match.discogs = ["Indie Rock", "Alternative Rock", "Indie Pop", "Britpop"]
+match.musicbrainz = ["indie rock", "alternative rock", "indie pop", "britpop"]
+match.everynoise = ["indie rock", "alternative rock", "modern rock", "indie pop", "britpop"]
+
+[[genre]]
+code = "KPP"
+name = "K-Pop / J-Pop"
+family = "Open Format"
+definition = "East Asian pop: K-pop, J-pop, C-pop and Mandopop."
+not = ["POP"]
+references = [
+  "NewJeans – Super Shy (3)",
+  "BTS – Dynamite (4)",
+  "PSY – Gangnam Style (5)",
+]
+match.discogs = ["K-pop", "J-pop"]
+match.musicbrainz = ["k-pop", "j-pop", "c-pop", "mandopop"]
+match.everynoise = ["k-pop", "j-pop", "c-pop", "mandopop"]
+
+[[genre]]
+code = "DSI"
+name = "South Asian"
+family = "Open Format"
+definition = "Music from South Asia and its diaspora: Bollywood and filmi songs, bhangra, desi hip-hop."
+styles = [{ code = "BLW", name = "Bollywood" }, { code = "BHG", name = "Bhangra" }]
+references = [
+  "Arijit Singh – Tum Hi Ho (1)",
+  "Panjabi MC – Mundian To Bach Ke (4)",
+  "Daler Mehndi – Tunak Tunak Tun (5)",
+]
+match.discogs = ["Bollywood", "Bhangra"]
+match.musicbrainz = ["filmi", "bhangra"]
+match.everynoise = ["filmi", "bhangra", "desi hip hop"]
+
+[[genre]]
+code = "ARB"
+name = "Arabic / Middle Eastern"
+family = "Open Format"
+definition = "Pop and party music from the Arab world, North Africa and Turkey: Arab pop, khaliji, raï, mahraganat."
+references = [
+  "Amr Diab – Tamally Maak (2)",
+  "Khaled – Didi (4)",
+  "Tarkan – Şımarık (5)",
+]
+match.discogs = ["Raï"]
+match.musicbrainz = ["raï", "mahraganat", "turkish pop"]
+match.everynoise = ["arab pop", "khaliji", "rai", "mahraganat", "turkish pop"]
+
+[[genre]]
+code = "JZZ"
+name = "Jazz"
+family = "Open Format"
+definition = "Jazz for listening, dinner and dancing: vocal, smooth, acid and nu jazz."
+not = ["SOL"]
+references = [
+  "The Dave Brubeck Quartet – Take Five (2)",
+  "Herbie Hancock – Cantaloupe Island (3)",
+  "Us3 – Cantaloop (Flip Fantasia) (4)",
+]
+match.discogs = ["Jazz-Funk", "Acid Jazz", "Smooth Jazz", "Contemporary Jazz"]
+match.musicbrainz = ["jazz", "jazz-funk", "nu jazz", "acid jazz", "vocal jazz", "smooth jazz"]
+match.everynoise = ["jazz", "jazz funk", "nu jazz", "acid jazz", "vocal jazz", "smooth jazz"]
+
+[[genre]]
+code = "GSP"
+name = "Gospel"
+family = "Open Format"
+definition = "Gospel and contemporary Christian music."
+references = [
+  "Marvin Sapp – Never Would Have Made It (2)",
+  "The Edwin Hawkins Singers – Oh Happy Day (3)",
+  "Kirk Franklin & God's Property – Stomp (5)",
+]
+match.discogs = ["Gospel"]
+match.musicbrainz = ["gospel", "contemporary gospel", "contemporary christian"]
+match.everynoise = ["gospel", "contemporary gospel", "worship"]
+
+[[genre]]
+code = "CLS"
+name = "Classical / Soundtrack"
+family = "Open Format"
+definition = "Classical, modern classical and film scores: ceremonies, entrances, intros."
+references = [
+  "Johann Pachelbel – Canon in D (1)",
+  "Hans Zimmer – Time (3)",
+  "Felix Mendelssohn – Wedding March (4)",
+]
+match.discogs = ["Classical", "Modern Classical", "Soundtrack", "Score"]
+match.musicbrainz = ["classical", "modern classical"]
+match.everynoise = ["classical", "soundtrack", "orchestral soundtrack", "neoclassical"]
+
+[[genre]]
+code = "WLD"
+name = "World / Folk"
+family = "Open Format"
+definition = "Folk and regional party music the other genres don't cover: schlager, Balkan, polka."
+styles = [{ code = "SCH", name = "Schlager" }, { code = "BLK", name = "Balkan" }]
+references = [
+  "Udo Jürgens – Griechischer Wein (2)",
+  "Helene Fischer – Atemlos durch die Nacht (5)",
+  "Goran Bregović – Kalashnikov (5)",
+]
+match.discogs = ["Schlager", "Polka", "Folk"]
+match.musicbrainz = ["schlager", "turbo-folk", "polka", "folk"]
+match.everynoise = ["schlager", "balkan brass", "turbo folk", "polka", "folk", "world"]
+
+# 12 Utility
+[[genre]]
+code = "TLS"
+name = "DJ Tools"
+short = "Tools"
+family = "Utility"
+definition = "Material with no genre of its own: battle tools, loops, FX and sound beds. A drum loop that belongs to a genre gets that genre and the #tool label instead, and an edit or acapella keeps its genre and gets #edit or #acapella."
+styles = [{ code = "BTL", name = "Battle Tools" }, { code = "LPS", name = "Loops" }]
+references = [
+  "The Turntablist – Super Duck Breaks",
+  "Skratchy Seal – Super Seal Breaks",
+  "Psychedelic Skratch Bastards – Battle Breaks",
+]
+
+# Labels: yes/no facts about a track, written into its Comment tag as #tag (e.g. "#vocal #1990s").
+# Labels in the same group exclude each other.
+[[label]]
+tag = "vocal"
+name = "Vocal"
+description = "A lead vocal or a vocal hook carries the track."
+group = "vocals"
+
+[[label]]
+tag = "inst"
+name = "Instrumental"
+description = "No lead vocal. Short vocal samples are fine."
+group = "vocals"
+
+[[label]]
+tag = "acapella"
+name = "Acapella"
+description = "Vocal only, for layering over another track."
+group = "vocals"
+
+[[label]]
+tag = "tool"
+name = "DJ tool"
+description = "Made for mixing rather than playing on its own: loops, drum tracks, intros, FX."
+
+[[label]]
+tag = "edit"
+name = "Edit"
+description = "A DJ edit, bootleg or rework of another track."
+
+[[label]]
+tag = "clean"
+name = "Clean"
+description = "No explicit lyrics, or a radio edit."
+group = "lyrics"
+
+[[label]]
+tag = "explicit"
+name = "Explicit"
+description = "Has explicit lyrics."
+group = "lyrics"
+
+[[label]]
+tag = "1920s"
+name = "1920s"
+description = "The song is from the 1920s: the original, not the remix."
+group = "era"
+
+[[label]]
+tag = "1930s"
+name = "1930s"
+description = "The song is from the 1930s: the original, not the remix."
+group = "era"
+
+[[label]]
+tag = "1940s"
+name = "1940s"
+description = "The song is from the 1940s: the original, not the remix."
+group = "era"
+
+[[label]]
+tag = "1950s"
+name = "1950s"
+description = "The song is from the 1950s: the original, not the remix."
+group = "era"
+
+[[label]]
+tag = "1960s"
+name = "1960s"
+description = "The song is from the 1960s: the original, not the remix."
+group = "era"
+
+[[label]]
+tag = "1970s"
+name = "1970s"
+description = "The song is from the 1970s: the original, not the remix."
+group = "era"
+
+[[label]]
+tag = "1980s"
+name = "1980s"
+description = "The song is from the 1980s: the original, not the remix."
+group = "era"
+
+[[label]]
+tag = "1990s"
+name = "1990s"
+description = "The song is from the 1990s: the original, not the remix."
+group = "era"
+
+[[label]]
+tag = "2000s"
+name = "2000s"
+description = "The song is from the 2000s: the original, not the remix."
+group = "era"
+
+[[label]]
+tag = "2010s"
+name = "2010s"
+description = "The song is from the 2010s: the original, not the remix."
+group = "era"
+
+[[label]]
+tag = "2020s"
+name = "2020s"
+description = "The song is from the 2020s: the original, not the remix."
+group = "era"

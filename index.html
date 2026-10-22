@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Open Crate Codes</title>
+<meta name="description" content="A free, shared system for tagging genre and energy in your DJ library. One Album tag, readable by every DJ app.">
+<meta name="theme-color" content="#1B1E24">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=JetBrains+Mono:wght@400..700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <a class="mark" href="#top" aria-label="Open Crate Codes home">
+      <svg viewBox="0 0 26 26" aria-hidden="true"><rect x="1" y="9" width="24" height="16" rx="3" fill="#2B3039"/><rect x="4" y="3" width="6" height="9" rx="2" fill="#4FD1E0"/><rect x="11" y="5" width="6" height="7" rx="2" fill="#F5D06A"/><rect x="18" y="2" width="5" height="10" rx="2" fill="#F28FB8"/></svg>
+      <span>Open Crate Codes</span>
+    </a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="#tempo">Tempo</a></li>
+        <li><a href="#genres">Genres</a></li>
+        <li><a href="#energy">Energy</a></li>
+        <li><a href="#labels">Labels</a></li>
+        <li><a href="#finding">Finding tracks</a></li>
+        <li><a href="spec.html">Spec</a></li>
+        <li><a href="#use">Download</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-head">
+      <div>
+        <span class="draft" id="version">Draft</span>
+        <h1>Tag what a track is and when to play it.</h1>
+      </div>
+      <div>
+        <p class="lede">Open Crate Codes is a free, shared system for tagging genre and energy. It lives in the Album field, so every DJ app can read, sort and search it, and your tags still make sense on someone else's laptop.</p>
+        <p class="muted" id="counts"></p>
+      </div>
+    </div>
+
+    <div class="tag" id="tag" aria-live="polite">
+      <span class="part" id="t-fam"><span></span><small>Family</small></span>
+      <span class="part" id="t-code"><span></span><small>Genre and style</small></span>
+      <span class="part" id="t-e"><span></span><small>Energy</small></span>
+      <span class="part name" id="t-name"><span></span><small>Name</small></span>
+    </div>
+
+    <div class="studio">
+      <div class="picker">
+        <div class="pick-top">
+          <h2>Build a tag</h2>
+          <label for="quick" class="sr-only">Find a genre or style</label>
+          <input type="search" id="quick" placeholder="Type a code or name: DNB.LIQ, jungle…" autocomplete="off" enterkeyhint="go">
+        </div>
+        <div id="steps">
+          <div class="fam-tabs" role="group" aria-label="Family" id="pick-fam"></div>
+          <div class="fam-panel" id="fam-panel">
+            <div class="chips" role="group" aria-label="Genre" id="pick-genre"></div>
+            <div class="pick-row" id="style-row">
+              <span>Style</span>
+              <div class="chips small" role="group" aria-label="Style" id="pick-style"></div>
+            </div>
+          </div>
+        </div>
+        <div class="chips results" role="group" aria-label="Matching genres and styles" id="quick-results" hidden></div>
+        <div class="pick-row energy-row">
+          <span>Energy</span>
+          <div class="energy-pick" role="group" aria-label="Energy" id="pick-energy"></div>
+        </div>
+      </div>
+
+      <aside class="crate" aria-labelledby="crate-title">
+        <h2 id="crate-title">Your crate, sorted by Album</h2>
+        <ol id="crate"></ol>
+        <p>Your track lands next to its family and genre, ordered by energy. The square is the track colour each energy sets.</p>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<section class="block">
+  <div class="wrap">
+    <h2>Built to stay readable</h2>
+    <p class="lede">A tag you write today has to mean the same thing in five years, and in another DJ's library.</p>
+    <div class="rules">
+      <div><h3>Codes never change</h3><p>DNB means Drum &amp; Bass in every version. Retired codes still read, and they're never reused for something else.</p></div>
+      <div><h3>Names are for people</h3><p>Apps identify a tag by its family number and code, and ignore the name. Renaming a genre doesn't break anyone's tags.</p></div>
+      <div><h3>Energy is relative</h3><p>E5 is the biggest track in its own genre. A Deep House E5 and a Hard Techno E1 can both be right.</p></div>
+      <div><h3>Private codes are yours</h3><p>Codes starting with X and families 90–99 are for your own additions. The standard will never use them.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="tempo">
+  <div class="wrap">
+    <h2>Every genre by tempo</h2>
+    <p class="lede">Each bar is a genre's usual BPM range, coloured by family. Families 01–09 run from the slowest typical tempo to the fastest. Ambient, open format and utility genres have no set tempo, so they're not on the map.</p>
+    <p class="muted">Select a genre to read about it.</p>
+    <div class="tempo" id="tempo-map"></div>
+  </div>
+</section>
+
+<section class="block" id="genres">
+  <div class="wrap">
+    <h2>Genres</h2>
+    <p class="lede">Every genre has a three-letter code. Broad genres have optional styles: a track is DNB, or DNB.LIQ when you know it's Liquid. Leave the style off when you're not sure.</p>
+    <div class="find">
+      <label for="q" class="sr-only">Find a genre</label>
+      <input type="search" id="q" placeholder="Find by code, name, or another catalogue's name, like jungle or guaracha" autocomplete="off">
+      <output id="q-count" for="q"></output>
+    </div>
+    <div id="families"><p class="empty" id="load-msg">Loading the genre list…</p></div>
+  </div>
+</section>
+
+<section class="block" id="energy">
+  <div class="wrap">
+    <h2>Energy is relative to the genre</h2>
+    <p class="lede">Energy says when to play a track. Rate it against other tracks in its own genre, not against your whole library: the biggest Deep House record you own is E5, even though it's calmer than any Hard Techno.</p>
+    <div class="ladders" aria-label="Diagram: Deep House, Tech House and Hard Techno each have their own E1 to E5 range, stacked at different heights of overall intensity." role="img">
+      <div class="axis"><span style="bottom:0">Calmer</span><span style="bottom:100%">Harder</span></div>
+      <div class="ladder" style="--lo:2%;--h:44%"><p>Deep House</p><ol class="rungs"></ol></div>
+      <div class="ladder" style="--lo:22%;--h:44%"><p>Tech House</p><ol class="rungs"></ol></div>
+      <div class="ladder" style="--lo:46%;--h:44%"><p>Hard Techno</p><ol class="rungs"></ol></div>
+    </div>
+    <div class="levels" id="levels"></div>
+    <p class="muted" style="margin-top:24px">Most libraries end up with most tracks at E3 and only a few at E5. That's a result, not a rule. Leave a track unrated and no energy is written.</p>
+    <p class="muted">Mixed In Key's energy (1–10) measures intensity across all music, so it's a different scale. Keep both if you use both, and don't convert one into the other.</p>
+  </div>
+</section>
+
+<section class="block" id="labels">
+  <div class="wrap">
+    <h2>Labels</h2>
+    <p class="lede">Labels are yes-or-no facts about a track, written into the Comment field as hashtags. Pick at most one from each group. Apps keep any other text in the comment as it is.</p>
+    <div class="label-groups" id="label-groups"></div>
+    <p class="example">Comment: #vocal #edit #clean #1990s</p>
+  </div>
+</section>
+
+<section class="block" id="finding">
+  <div class="wrap">
+    <h2>Finding tracks</h2>
+    <p class="lede">Build smart playlists on the Album field. Always include the family number: on its own, a code like MIN also finds untagged tracks from albums called Mind or Domino.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">To find</th><th scope="col">Album contains</th></tr></thead>
+        <tbody>
+          <tr><td>Every Drum &amp; Bass track, with or without a style</td><td><code>09 DNB</code></td></tr>
+          <tr><td>Only Liquid Drum &amp; Bass</td><td><code>09 DNB.LIQ</code></td></tr>
+          <tr><td>Drum &amp; Bass peak weapons</td><td><code>09 DNB</code> and <code>E5</code>, as two conditions that must both match</td></tr>
+          <tr><td>Psy-Techno, a style of Peak Time Techno</td><td><code>07 TPK.PST</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">App</th><th scope="col">Where</th><th scope="col">Checked</th></tr></thead>
+        <tbody>
+          <tr><td>Rekordbox</td><td>Intelligent playlist, Album contains</td><td class="muted">Not yet</td></tr>
+          <tr><td>Serato DJ</td><td>Smart crate, Album contains</td><td class="muted">Not yet</td></tr>
+          <tr><td>Engine DJ, Traktor, VirtualDJ, djay</td><td>Library search on the Album text</td><td class="muted">Not yet</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="block" id="tools">
+  <div class="wrap">
+    <h2>Works with your other tools</h2>
+    <p class="lede">Open Crate Codes only uses Album, Genre and hashtags in Comment, so it sits alongside the tools you already use. A few settings keep them from stepping on each other.</p>
+    <div class="rules">
+      <div><h3>Mixed In Key</h3><p>Keep it for key and its 1–10 energy, which measures intensity across all music. Write its results to Grouping or in front of the comment, never "Overwrite the comment", or your labels are gone.</p></div>
+      <div><h3>Auto-taggers</h3><p>OneTagger, MusicBrainz Picard and similar tools can overwrite Album with the release title. Turn that off for tagged tracks. The crosswalk lets them suggest a code from the genre they find.</p></div>
+      <div><h3>Rekordbox</h3><p>Build the searches above as intelligent playlists. My Tag stays in Rekordbox's own library; these tags travel with the file to any app.</p></div>
+      <div><h3>Library managers</h3><p>Lexicon and similar tools carry Album between DJ apps, so your tags move with your library. Make sure metadata clean-up leaves Album alone.</p></div>
+    </div>
+    <p class="muted" style="margin-top:28px">The details are in <a href="spec.html#tools">the spec</a>.</p>
+  </div>
+</section>
+
+<section class="block" id="use">
+  <div class="wrap">
+    <h2>Use it</h2>
+    <p class="lede" id="use-version">The draft is open for comments. Codes in it won't change; genres may still be added before 1.0.</p>
+    <div class="files">
+      <a class="file" href="occ.toml" download><b>occ.toml</b><span>The standard as a TOML file, the source for everything else.</span></a>
+      <a class="file" href="occ.json" download><b>occ.json</b><span>The same data as JSON, for apps and scripts.</span></a>
+      <a class="file" href="spec.html"><b>spec.html</b><span>The rules for reading and writing tags, for people who build DJ software.</span></a>
+      <a class="file" href="CHANGELOG.md"><b>CHANGELOG.md</b><span>What changed in each version.</span></a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Open Crate Codes is free to use. The data files are public domain (CC0 1.0). The text of this site and the spec is CC BY 4.0.</p>
+    <p>The crosswalk to Discogs, MusicBrainz and Every Noise at Once was checked against each catalogue. The tempo map owes its idea to Glenn McDonald's <a href="https://everynoise.com/">Every Noise at Once</a>.</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, attrs = {}, kids = []) => {
+    const e = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v == null) continue;
+      if (k === 'text') e.textContent = v;
+      else if (k === 'style') e.style.cssText = v;
+      else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+      else e.setAttribute(k, v);
+    }
+    for (const kid of [].concat(kids)) if (kid != null && kid !== false) e.append(kid);
+    return e;
+  };
+  // Text on each energy colour: white on the deep blue, dark on the rest.
+  const energyFg = (level) => (level === 1 ? '#FFFFFF' : '#16181D');
+  const pad = (n) => String(n).padStart(2, '0');
+  const slug = (name) => name.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  fetch('occ.json')
+    .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(start)
+    .catch(() => {
+      $('load-msg').textContent = 'The genre list (occ.json) didn\'t load. Open this page from a web server rather than as a file, for example with "python3 -m http.server" in this folder.';
+    });
+
+  function start(occ) {
+    const families = occ.families;
+    const energy = occ.energy.filter((e) => e.level > 0);
+    const genres = families.flatMap((f) => f.genres.map((g) => ({ ...g, fam: f })));
+    const live = genres.filter((g) => !g.deprecated);
+    const styleCount = genres.reduce((n, g) => n + (g.styles || []).filter((s) => !s.deprecated).length, 0);
+
+    $('version').textContent = occ.version.replace('-draft', ' draft');
+    $('use-version').textContent = 'Version ' + occ.version + '. The draft is open for comments. Codes in it won\'t change; genres may still be added before 1.0.';
+    $('counts').textContent = families.length + ' families, ' + live.length + ' genres and ' + styleCount + ' styles, from ambient to uptempo hardcore and from hip-hop to schlager.';
+
+    // ---- Tag builder: family tab, then genre, optional style and energy ----
+    const state = { code: 'DNB', style: 'LIQ', level: 4 };
+    const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const byCode = new Map(live.map((g) => [g.code, g]));
+    const liveStyles = (g) => (g.styles || []).filter((s) => !s.deprecated);
+    const nameOf = (g, s) => g.name + (s ? ' (' + s.name + ')' : '');
+    const albumOf = (code, level) => {
+      const [gc, sc] = code.split('.');
+      const g = byCode.get(gc);
+      const s = sc && liveStyles(g).find((x) => x.code === sc);
+      return [pad(g.fam.number), code, level ? 'E' + level : '', nameOf(g, s)].filter(Boolean).join(' ');
+    };
+    const pick = (code, style) => { Object.assign(state, { code, style: style || null }); render(); };
+    const chip = (code, label, pressed, onclick, fc) => el('button', {
+      type: 'button', class: 'chip', 'aria-pressed': String(pressed), style: fc ? '--fc:' + fc : null, onclick,
+    }, [code ? el('code', { text: code }) : null, label]);
+
+    // Picking a family picks its first genre; the chips below refine it.
+    const famButtons = families.filter((f) => f.genres.some((g) => !g.deprecated)).map((f) => {
+      const b = el('button', {
+        type: 'button', class: 'fam-btn', style: '--fc:' + f.hex, 'aria-pressed': 'false',
+        onclick: () => { if (byCode.get(state.code).fam !== f) pick(f.genres.find((g) => !g.deprecated).code); },
+      }, [el('b', { text: pad(f.number) }), el('span', { text: f.name })]);
+      $('pick-fam').append(b);
+      return { b, f };
+    });
+
+    // Quick find: a code, a name, a style, or another catalogue's name for the genre.
+    const entries = live.flatMap((g) => [{ code: g.code, g, s: null }]
+      .concat(liveStyles(g).map((s) => ({ code: g.code + '.' + s.code, g, s }))))
+      .map((e) => ({
+        ...e,
+        hay: [e.code, e.g.name, e.g.short, e.s && e.s.name, ...(e.s ? [] : Object.values(e.g.match || {}).flat())]
+          .filter(Boolean).join('\n').toLowerCase(),
+      }));
+    const quick = $('quick');
+    function showResults() {
+      const q = quick.value.trim().toLowerCase();
+      $('steps').hidden = !!q;
+      $('quick-results').hidden = !q;
+      if (!q) return;
+      // Codes first, then names, then other catalogues' names for the genre.
+      const rank = (e) => {
+        const code = e.code.toLowerCase(), own = (e.s ? e.s.name : e.g.name).toLowerCase();
+        if (code === q) return 0;
+        if (code.startsWith(q)) return 1;
+        if (own.startsWith(q)) return 2;
+        if (own.includes(q) || (e.g.short || '').toLowerCase().includes(q)) return 3;
+        if (nameOf(e.g, e.s).toLowerCase().includes(q)) return 4;
+        return e.hay.includes(q) ? 5 : null;
+      };
+      const hits = entries.map((e) => [rank(e), e]).filter(([r]) => r !== null)
+        .sort((a, b) => a[0] - b[0]).slice(0, 12).map(([, e]) => e);
+      $('quick-results').replaceChildren(...(hits.length
+        ? hits.map((e) => chip(e.code, nameOf(e.g, e.s), false, () => {
+            quick.value = '';
+            showResults();
+            pick(e.g.code, e.s && e.s.code);
+          }, e.g.fam.hex))
+        : [el('p', { class: 'muted', text: 'Nothing matches that. Try a name like garage, or a code like THS.' })]));
+    }
+    quick.addEventListener('input', showResults);
+    quick.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter') { ev.preventDefault(); const first = $('quick-results').querySelector('button'); if (first) first.click(); }
+      if (ev.key === 'Escape') { quick.value = ''; showResults(); }
+    });
+
+    const eButtons = [];
+    [{ level: 0, name: 'Unrated' }].concat(energy).forEach((lvl) => {
+      const b = el('button', {
+        type: 'button',
+        'aria-pressed': 'false',
+        style: lvl.level ? '--lc:' + lvl.hex + ';--lfg:' + energyFg(lvl.level) : null,
+        title: lvl.name,
+        text: lvl.level ? 'E' + lvl.level : 'Unrated',
+        onclick: () => { state.level = lvl.level; render(); },
+      });
+      b.setAttribute('aria-label', lvl.level ? 'E' + lvl.level + ' ' + lvl.name : 'Unrated');
+      eButtons.push({ b, level: lvl.level });
+      $('pick-energy').append(b);
+    });
+
+    // The crate: a few fixed tracks plus yours, sorted by Album the way a DJ app sorts them.
+    const SAMPLE = [['DWN', 2], ['AFH.TST', 3], ['DHS', 2], ['MHT.MLT', 4], ['THS', 3], ['UKG.STP', 4], ['TPK', 5], ['DNB.LIQ', 3], ['HIP.OSK', 3]];
+    const crateRows = new Map();
+    function renderCrate() {
+      const mine = { key: 'you', code: state.code + (state.style ? '.' + state.style : ''), level: state.level, you: true };
+      const items = SAMPLE.map(([code, level], i) => ({ key: 's' + i, code, level, you: false })).concat(mine)
+        .map((it) => ({ ...it, album: albumOf(it.code, it.level), sort: albumOf(it.code, it.level).toUpperCase() }))
+        .sort((a, b) => (a.sort < b.sort ? -1 : a.sort > b.sort ? 1 : a.you ? 1 : -1));
+      const before = new Map([...crateRows].map(([k, li]) => [k, li.getBoundingClientRect().top]));
+      items.forEach((it) => {
+        let li = crateRows.get(it.key);
+        if (!li) { li = el('li'); crateRows.set(it.key, li); }
+        const e = energy.find((x) => x.level === it.level);
+        li.className = it.you ? 'you' : '';
+        li.style.setProperty('--fc', byCode.get(it.code.split('.')[0]).fam.hex);
+        if (it.you) li.setAttribute('aria-current', 'true'); else li.removeAttribute('aria-current');
+        li.replaceChildren(...[
+          el('i', { class: e ? null : 'none', style: e ? 'background:' + e.hex : null, 'aria-hidden': 'true' }),
+          el('span', { text: it.album, title: it.album }),
+          it.you ? el('b', { text: 'Your track' }) : null,
+        ].filter(Boolean));
+        $('crate').append(li);
+      });
+      // Slide rows from where they were to where they are now.
+      if (!reduceMotion) crateRows.forEach((li, k) => {
+        const dy = (before.get(k) ?? li.getBoundingClientRect().top) - li.getBoundingClientRect().top;
+        if (dy) li.animate([{ transform: 'translateY(' + dy + 'px)' }, { transform: 'none' }], { duration: 420, easing: 'cubic-bezier(.2,.7,.2,1)' });
+      });
+    }
+
+    function render() {
+      const g = byCode.get(state.code);
+      const s = state.style && liveStyles(g).find((x) => x.code === state.style);
+      const lvl = energy.find((x) => x.level === state.level);
+
+      $('t-fam').firstChild.textContent = pad(g.fam.number);
+      $('t-fam').lastChild.textContent = g.fam.name;
+      $('t-fam').style.color = g.fam.hex;
+      $('t-code').firstChild.replaceChildren(g.code, s ? el('span', { class: 'style', text: '.' + s.code }) : '');
+      $('t-e').hidden = !lvl;
+      if (lvl) {
+        $('t-e').firstChild.replaceChildren(el('span', { class: 'e', text: 'E' + lvl.level, style: 'background:' + lvl.hex + ';color:' + energyFg(lvl.level) }));
+        $('t-e').lastChild.textContent = lvl.name;
+        $('t-e').style.color = lvl.hex;
+      }
+      $('t-name').firstChild.textContent = nameOf(g, s);
+
+      famButtons.forEach(({ b, f }) => b.setAttribute('aria-pressed', String(f === g.fam)));
+      $('fam-panel').style.setProperty('--fc', g.fam.hex);
+      $('pick-genre').replaceChildren(...g.fam.genres.filter((x) => !x.deprecated)
+        .map((x) => chip(x.code, x.short || x.name, x.code === g.code, () => pick(x.code))));
+      const styles = liveStyles(g);
+      $('style-row').hidden = !styles.length;
+      $('pick-style').replaceChildren(...(styles.length
+        ? [chip(null, 'None', !s, () => pick(g.code))].concat(styles.map((x) => chip('.' + x.code, x.name, s === x, () => pick(g.code, x.code))))
+        : []));
+      eButtons.forEach(({ b, level }) => b.setAttribute('aria-pressed', String(level === state.level)));
+      renderCrate();
+    }
+    render();
+
+    // ---- Tempo map ----
+    const LO = 60, HI = 210;
+    const pos = (bpm) => ((bpm - LO) / (HI - LO)) * 100;
+    const map = $('tempo-map');
+    const scale = el('div', { class: 'scale' });
+    [60, 90, 120, 150, 180, 210].forEach((t) => scale.append(el('span', { style: 'left:' + pos(t) + '%', text: t })));
+    map.append(el('div', { class: 'tempo-axis', 'aria-hidden': 'true' }, [el('span', { text: 'BPM' }), scale]));
+    families.forEach((f) => {
+      const rows = f.genres.filter((g) => g.bpm && !g.deprecated);
+      if (!rows.length) return;
+      map.append(el('div', { class: 'tempo-fam', text: pad(f.number) + ' ' + f.name }));
+      rows.forEach((g) => {
+        const m = g.bpm.match(/^(\d+)–(\d+)(\+?)$/);
+        // An open-ended range (200+) fades out past its top, up to the edge of the map.
+        const lo = +m[1], hi = Math.min(+m[2] + (m[3] ? 14 : 0), HI);
+        map.append(el('div', { class: 'tempo-row', style: '--fc:' + f.hex }, [
+          el('button', { type: 'button', onclick: () => openGenre(g.code), 'aria-label': g.name + ', ' + g.bpm + ' BPM' }, [el('b', { text: g.code }), g.short || g.name]),
+          el('div', { class: 'track', title: g.bpm + ' BPM' }, [el('i', { class: m[3] ? 'open' : null, style: 'left:' + pos(lo) + '%;width:' + Math.max(pos(hi) - pos(lo), 1.2) + '%' })]),
+        ]));
+      });
+    });
+
+    // ---- Genre browser ----
+    const holder = $('families');
+    holder.replaceChildren();
+    const rows = [];
+    const sources = [['discogs', 'Discogs'], ['musicbrainz', 'MusicBrainz'], ['everynoise', 'Every Noise']];
+    families.forEach((f) => {
+      const body = el('div', { class: 'fam-body' });
+      const section = el('section', { class: 'fam', style: '--fc:' + f.hex + ';--slot:' + ((f.number - 1) % 4), 'aria-labelledby': 'fam-' + f.number }, [
+        el('div', { class: 'fam-tab' }, [
+          el('b', { text: pad(f.number) }),
+          el('h3', { id: 'fam-' + f.number, text: f.name }),
+          el('small', { text: f.bpm ? f.bpm + ' BPM' : 'Any tempo' }),
+        ]),
+        body,
+      ]);
+      f.genres.forEach((g) => {
+        const styles = g.styles || [];
+        const summaryNote = g.deprecated
+          ? 'Use the genre it edits, plus ' + g.use
+          : styles.filter((s) => !s.deprecated).map((s) => s.name).join(', ');
+        const more = el('div', { class: 'more' });
+        more.append(el('p', { text: g.definition }));
+        if (styles.length) {
+          more.append(el('div', {}, [
+            el('h4', { text: 'Styles' }),
+            el('ul', { class: 'styles' }, styles.map((s) => el('li', { class: s.deprecated ? 'gone' : null, title: s.deprecated ? 'Deprecated: use ' + s.use : null }, [el('code', { text: g.code + '.' + s.code }), s.name + (s.deprecated ? ' (use ' + s.use + ')' : '')]))),
+          ]));
+        }
+        if ((g.not || []).length) {
+          more.append(el('div', {}, [
+            el('h4', { text: 'Not to be confused with' }),
+            el('ul', { class: 'styles' }, g.not.map((c) => {
+              const o = genres.find((x) => x.code === c);
+              return el('li', {}, [el('a', { href: '#g-' + c, onclick: (ev) => { ev.preventDefault(); openGenre(c); } }, [el('code', { text: c, style: 'color:' + o.fam.hex }), o.name])]);
+            })),
+          ]));
+        }
+        const refs = g.references || [];
+        more.append(el('div', {}, [
+          el('h4', { text: 'Reference tracks' }),
+          refs.length
+            ? el('ul', { class: 'refs' }, refs.map((r) => {
+                // Tools carry no energy, so their references have no chip.
+                const m = r.match(/^(.*) \(([1-5])\)$/);
+                const lvl = m && energy.find((e) => e.level === +m[2]);
+                return el('li', {}, lvl
+                  ? [el('span', { class: 'echip', style: '--lc:' + lvl.hex + ';--lfg:' + energyFg(lvl.level), text: 'E' + lvl.level }), m[1]]
+                  : [r]);
+              }))
+            : el('p', { class: 'muted', text: 'No reference tracks yet.' }),
+        ]));
+        const match = g.match || {};
+        const xw = sources.filter(([k]) => (match[k] || []).length);
+        if (xw.length) {
+          more.append(el('div', {}, [
+            el('h4', { text: 'In other catalogues' }),
+            el('div', { class: 'xwalk' }, xw.map(([k, label]) => el('div', {}, [
+              el('span', { text: label }),
+              el('span', {}, k === 'everynoise'
+                ? match[k].flatMap((n, i) => [i ? ', ' : '', el('a', { href: 'https://everynoise.com/engenremap-' + slug(n) + '.html', rel: 'noopener', text: n })])
+                : match[k].join(', ')),
+            ]))),
+          ]));
+        }
+        const details = el('details', { class: 'genre', id: 'g-' + g.code }, [
+          el('summary', {}, [
+            el('code', { text: g.code }),
+            el('span', { class: 'gname' }, [
+              g.name,
+              g.deprecated ? el('span', { class: 'badge warn', text: 'Deprecated' }) : null,
+              summaryNote ? el('small', { text: summaryNote }) : null,
+            ]),
+            el('span', { class: 'bpm', text: g.bpm ? g.bpm + ' BPM' : '' }),
+          ]),
+          more,
+        ]);
+        body.append(details);
+        const haystack = [g.code, g.name, g.short, ...styles.flatMap((s) => [g.code + '.' + s.code, s.name]), ...Object.values(match).flat()]
+          .filter(Boolean).join('\n').toLowerCase();
+        rows.push({ details, section, haystack });
+      });
+      holder.append(section);
+    });
+    const empty = el('p', { class: 'empty', hidden: '', text: 'No genre matches that. Try a broader word, or the code\'s first letters.' });
+    holder.append(empty);
+
+    $('q').addEventListener('input', () => {
+      const q = $('q').value.trim().toLowerCase();
+      let n = 0;
+      rows.forEach((r) => { const hit = !q || r.haystack.includes(q); r.details.hidden = !hit; if (hit) n++; });
+      document.querySelectorAll('.fam').forEach((s) => { s.hidden = ![...s.querySelectorAll('.genre')].some((d) => !d.hidden); });
+      empty.hidden = n > 0;
+      $('q-count').textContent = q ? n + (n === 1 ? ' genre' : ' genres') : '';
+    });
+
+    function openGenre(code) {
+      const d = $('g-' + code);
+      if (!d) return;
+      if (d.hidden) { $('q').value = ''; $('q').dispatchEvent(new Event('input')); }
+      d.open = true;
+      d.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+      d.querySelector('summary').focus({ preventScroll: true });
+    }
+    if (location.hash.startsWith('#g-')) openGenre(location.hash.slice(3));
+
+    // ---- Energy ----
+    document.querySelectorAll('.rungs').forEach((ol) => energy.forEach((e) => ol.append(el('li', { style: '--lc:' + e.hex + ';--lfg:' + energyFg(e.level), text: 'E' + e.level }))));
+    energy.forEach((e) => $('levels').append(el('div', { class: 'level' }, [
+      el('span', { class: 'echip', style: '--lc:' + e.hex + ';--lfg:' + energyFg(e.level), text: 'E' + e.level }),
+      el('div', {}, [el('h3', { text: e.name }), el('p', { text: e.description }), el('p', { class: 'muted', text: 'Rekordbox colour: ' + e.colour })]),
+    ])));
+
+    // ---- Labels ----
+    const groupNames = { vocals: 'Vocals', lyrics: 'Lyrics', era: 'Decade' };
+    const groups = new Map();
+    occ.labels.forEach((l) => {
+      const key = l.group || 'form';
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(l);
+    });
+    // Decades share one description; the other groups describe each label.
+    groups.forEach((list, key) => $('label-groups').append(el('div', {}, [
+      el('h3', { text: groupNames[key] || 'Format' }),
+      key === 'era'
+        ? [el('ul', {}, list.map((l) => el('li', { title: l.name, text: '#' + l.tag }))),
+           el('p', { class: 'muted', text: 'The decade the song is from: the original, not the remix. Pick one.' })]
+        : [el('dl', { class: 'label-list' }, list.flatMap((l) => [el('dt', {}, [el('code', { text: '#' + l.tag })]), el('dd', { text: l.description })])),
+           el('p', { class: 'muted', text: key === 'form' ? 'Use any that apply.' : 'Pick one.' })],
+    ].flat())));
+  }
+})();
+</script>
+</body>
+</html>
