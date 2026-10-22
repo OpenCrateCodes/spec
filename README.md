@@ -14,12 +14,15 @@ See it on the site: https://opencratecodes.com
 - `occ.toml`: the standard's data. This is the file to edit.
 - `occ.json`: generated from `occ.toml`. Don't edit it by hand.
 - `tools/build.py`: checks `occ.toml` against the rules and writes `occ.json`.
+- `previews.json`: Deezer track ids for the reference tracks, for the page's play buttons. It's for the site only, not part of the standard.
+- `tools/previews.py`: finds new reference tracks on Deezer and adds them to `previews.json`.
 - `.nojekyll`: tells GitHub Pages to serve every file as is, so `CHANGELOG.md` and `occ.toml` download unchanged.
 
 ## Editing
 
 ```sh
 python3 tools/build.py        # check occ.toml and regenerate occ.json
+python3 tools/previews.py     # look up new reference tracks on Deezer
 python3 -m http.server        # then open http://localhost:8000
 ```
 
@@ -32,6 +35,8 @@ The page loads `occ.json`, so open it through a web server rather than as a file
 - a crosswalk source it doesn't know
 
 Every name under `match.*` was checked against its catalogue when it was added: Discogs styles (from the Discogs data dump), the MusicBrainz genre list, and the Every Noise at Once genre pages. Leave a name out rather than guess.
+
+The same goes for previews. `previews.py` only takes a Deezer track whose artist and title match, in the original version or a plain edit or remaster, and lists the references it couldn't match. Check what it found, then fix any by hand in `previews.json`: an id for the right track, or `null` for no preview. Hand fixes are kept when it runs again.
 
 ## License
 

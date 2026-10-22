@@ -211,6 +211,7 @@
   <div class="wrap">
     <p>Open Crate Codes is free to use. The data files are public domain (CC0 1.0). The text of this site and the spec is CC BY 4.0.</p>
     <p>The crosswalk to Discogs, MusicBrainz and Every Noise at Once was checked against each catalogue. The tempo map owes its idea to Glenn McDonald's <a href="https://everynoise.com/">Every Noise at Once</a>.</p>
+    <p>The 30-second previews of the reference tracks play from <a href="https://www.deezer.com/">Deezer</a>.</p>
   </div>
 </footer>
 
@@ -234,14 +235,15 @@
   const pad = (n) => String(n).padStart(2, '0');
   const slug = (name) => name.toLowerCase().replace(/[^a-z0-9]/g, '');
 
-  fetch('occ.json')
-    .then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(start)
+  const getJSON = (url) => fetch(url).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
+  // Previews are extra: without previews.json the page just has no play buttons.
+  Promise.all([getJSON('occ.json'), getJSON('previews.json').catch(() => ({}))])
+    .then(([occ, previews]) => start(occ, previews))
     .catch(() => {
       $('load-msg').textContent = 'The genre list (occ.json) didn\'t load. Open this page from a web server rather than as a file, for example with "python3 -m http.server" in this folder.';
     });
 
-  function start(occ) {
+  function start(occ, previews) {
     const families = occ.families;
     const energy = occ.energy.filter((e) => e.level > 0);
     const genres = families.flatMap((f) => f.genres.map((g) => ({ ...g, fam: f })));
@@ -417,6 +419,81 @@
       });
     });
 
+    // ---- Previews: 30 seconds of a reference track, from Deezer ----
+    // Deezer's preview links expire within minutes, so previews.json keeps track ids and the links
+    // are asked for as a genre opens. Deezer's API sends no CORS headers, hence JSONP.
+    const audio = new Audio();
+    let now = null; // { b, id } for the preview that's loaded
+    let calls = 0;
+    const links = new Map(); // Deezer id → { p: the lookup, url: once it's back, '' if none }
+    const jsonp = (url) => new Promise((resolve, reject) => {
+      const cb = 'occDeezer' + ++calls;
+      const s = document.createElement('script');
+      const finish = (settle, value) => { clearTimeout(timer); window[cb] = () => {}; s.remove(); settle(value); };
+      const timer = setTimeout(() => finish(reject, new Error('Deezer timed out')), 8000);
+      window[cb] = (body) => finish(resolve, body);
+      s.onerror = () => finish(reject, new Error('Deezer unreachable'));
+      s.src = url + '?output=jsonp&callback=' + cb;
+      document.head.append(s);
+    });
+    // A link is good until a minute before the expiry Deezer writes into it.
+    const fresh = (url) => { const m = /exp=(\d+)/.exec(url); return !m || m[1] * 1000 - Date.now() > 60000; };
+    function lookUp(id) {
+      const known = links.get(id);
+      if (known && (!known.url || fresh(known.url))) return known.p;
+      const entry = {};
+      entry.p = jsonp('https://api.deezer.com/track/' + id).then((t) => (entry.url = t.preview || ''));
+      entry.p.catch(() => links.delete(id));
+      links.set(id, entry);
+      return entry.p;
+    }
+    const show = (b, state) => {
+      b.dataset.state = state;
+      b.setAttribute('aria-pressed', String(state === 'wait' || state === 'playing'));
+      if (!state) b.style.setProperty('--p', 0);
+    };
+    function stop() {
+      if (!now) return;
+      audio.pause();
+      show(now.b, '');
+      now = null;
+    }
+    // A play() that fails after another button was pressed mustn't stop that one.
+    const stopIf = (b) => () => { if (now && now.b === b) stop(); };
+    function toggle(b, id) {
+      if (now && now.b === b) {
+        if (b.dataset.state === 'wait') stop();
+        else if (audio.paused) audio.play().catch(stopIf(b));
+        else { audio.pause(); show(b, 'paused'); }
+        return;
+      }
+      stop();
+      now = { b, id };
+      show(b, 'wait');
+      const begin = (url) => {
+        if (!now || now.b !== b) return;
+        if (url) { audio.src = url; audio.play().catch(stopIf(b)); return; }
+        stop();
+        b.disabled = true;
+        b.title = 'No preview on Deezer';
+      };
+      // Safari only plays from inside the click, so use a link that's already here when there is one.
+      const known = links.get(id);
+      if (known && known.url !== undefined && fresh(known.url)) begin(known.url);
+      else lookUp(id).then(begin, stopIf(b));
+    }
+    audio.addEventListener('playing', () => now && show(now.b, 'playing'));
+    audio.addEventListener('timeupdate', () => now && now.b.style.setProperty('--p', audio.currentTime / (audio.duration || 30)));
+    audio.addEventListener('ended', stop);
+    // Most likely a link that expired: forget it, so the next press asks again.
+    audio.addEventListener('error', () => { if (now) { links.delete(now.id); stop(); } });
+    const playButton = (name, id) => id
+      ? el('button', {
+          type: 'button', class: 'play', 'aria-pressed': 'false', 'aria-label': 'Preview ' + name,
+          title: 'Play 30 seconds from Deezer', onclick: (ev) => toggle(ev.currentTarget, id),
+        })
+      : el('span', { class: 'play', 'aria-hidden': 'true' });
+
     // ---- Genre browser ----
     const holder = $('families');
     holder.replaceChildren();
@@ -454,18 +531,22 @@
             })),
           ]));
         }
-        const refs = g.references || [];
+        const refs = (g.references || []).map((r) => {
+          // Tools carry no energy, so their references have no chip.
+          const m = r.match(/^(.*) \(([1-5])\)$/);
+          const name = m ? m[1] : r;
+          return { name, id: previews[name], lvl: m && energy.find((e) => e.level === +m[2]) };
+        });
+        const heard = refs.filter((r) => r.id);
         more.append(el('div', {}, [
           el('h4', { text: 'Reference tracks' }),
           refs.length
-            ? el('ul', { class: 'refs' }, refs.map((r) => {
-                // Tools carry no energy, so their references have no chip.
-                const m = r.match(/^(.*) \(([1-5])\)$/);
-                const lvl = m && energy.find((e) => e.level === +m[2]);
-                return el('li', {}, lvl
-                  ? [el('span', { class: 'echip', style: '--lc:' + lvl.hex + ';--lfg:' + energyFg(lvl.level), text: 'E' + lvl.level }), m[1]]
-                  : [r]);
-              }))
+            ? el('ul', { class: 'refs' }, refs.map((r) => el('li', {}, [
+                // A track without a preview keeps an empty slot, so the list stays lined up.
+                heard.length ? playButton(r.name, r.id) : null,
+                r.lvl ? el('span', { class: 'echip', style: '--lc:' + r.lvl.hex + ';--lfg:' + energyFg(r.lvl.level), text: 'E' + r.lvl.level }) : null,
+                r.name,
+              ])))
             : el('p', { class: 'muted', text: 'No reference tracks yet.' }),
         ]));
         const match = g.match || {};
@@ -494,6 +575,11 @@
           more,
         ]);
         body.append(details);
+        // Ask Deezer for the preview links as the genre opens, so pressing play starts at once.
+        if (heard.length) details.addEventListener('toggle', () => {
+          if (details.open) heard.forEach((r) => lookUp(r.id).catch(() => {}));
+          else if (now && details.contains(now.b)) stop();
+        });
         const haystack = [g.code, g.name, g.short, ...styles.flatMap((s) => [g.code + '.' + s.code, s.name]), ...Object.values(match).flat()]
           .filter(Boolean).join('\n').toLowerCase();
         rows.push({ details, section, haystack });

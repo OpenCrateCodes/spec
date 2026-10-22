@@ -187,7 +187,17 @@ input[type="search"] { font: inherit; color: var(--ink); background: var(--surfa
 .styles li code { color: var(--fc); margin-right: .5ch; }
 .styles li.gone { text-decoration: line-through; color: var(--muted); }
 .refs { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.refs li { display: flex; gap: 10px; align-items: baseline; }
+.refs li { display: flex; gap: 10px; align-items: center; }
+/* Preview: a play triangle, pause bars while it plays, and a ring in the family colour that fills
+   over its 30 seconds. */
+.play { flex: none; position: relative; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--ground); color: var(--ink); cursor: pointer; }
+span.play { visibility: hidden; }
+.play:hover { border-color: var(--ink-2); }
+.play::before { content: ""; width: 9px; height: 10px; margin-left: 2px; background: currentColor; clip-path: polygon(0 0, 100% 50%, 0 100%); }
+.play[data-state="playing"]::before { margin-left: 0; clip-path: none; background: linear-gradient(90deg, currentColor 0 35%, transparent 35% 65%, currentColor 65%); }
+.play::after { content: ""; position: absolute; inset: -1px; border-radius: 50%; background: conic-gradient(var(--fc) calc(var(--p, 0) * 1turn), transparent 0); -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px)); mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 2px)); }
+.play[data-state="wait"]::after { background: conic-gradient(var(--fc) .25turn, transparent 0); }
+.play:disabled { opacity: .35; cursor: default; }
 .echip { font: 700 .75rem/1 var(--mono); padding: 4px 6px; border-radius: 5px; background: var(--lc); color: var(--lfg); flex: none; }
 .xwalk { display: grid; gap: 4px; font-size: .92rem; }
 .xwalk div { display: grid; grid-template-columns: 7.5rem 1fr; gap: 10px; }
@@ -268,4 +278,6 @@ footer p { max-width: 80ch; }
   .tag .part > span:first-child { transition: color .2s; }
   .genre .more { animation: open .18s ease-out; }
   @keyframes open { from { opacity: 0; transform: translateY(-4px); } }
+  .play[data-state="wait"]::after { animation: spin .8s linear infinite; }
+  @keyframes spin { to { transform: rotate(1turn); } }
 }
