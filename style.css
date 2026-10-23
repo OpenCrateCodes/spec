@@ -188,6 +188,8 @@ input[type="search"] { font: inherit; color: var(--ink); background: var(--surfa
 .styles li.gone { text-decoration: line-through; color: var(--muted); }
 .refs { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .refs li { display: flex; gap: 10px; align-items: center; }
+/* Where a preview that isn't from Deezer comes from. */
+.refs .src { color: var(--muted); font-size: .8rem; white-space: nowrap; }
 /* Preview: a play triangle, pause bars while it plays, and a ring in the family colour that fills
    over its 30 seconds. */
 .play { flex: none; position: relative; display: grid; place-items: center; width: 30px; height: 30px; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--ground); color: var(--ink); cursor: pointer; }

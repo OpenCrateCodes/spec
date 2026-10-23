@@ -8,8 +8,9 @@ page asks Deezer for the 30-second preview's link on each visit, because those l
 
 Only a match on artist and title counts, in the original version or a plain edit or remaster;
 anything else is left out rather than guessed. Entries already in the file are kept, so a hand fix
-sticks: set an id to correct a match, or null to say there's no preview. --all looks every
-reference up again. It's for the site only and isn't part of the standard.
+sticks: set an id to correct a match, or null to say there's no preview. For a track Deezer doesn't
+have, set {"apple": track id} or {"soundcloud": track url} instead. --all looks every reference up
+again, except those. It's for the site only and isn't part of the standard.
 Standard library only.
 """
 
@@ -103,7 +104,9 @@ def main():
     data = tomllib.loads((ROOT / "occ.toml").read_text())
     refs = [ENERGY.sub(r"\1", r) for g in data["genre"] for r in g.get("references", [])]
     out = ROOT / "previews.json"
-    old = {} if "--all" in sys.argv or not out.exists() else json.loads(out.read_text())
+    old = json.loads(out.read_text()) if out.exists() else {}
+    if "--all" in sys.argv:
+        old = {r: v for r, v in old.items() if isinstance(v, dict)}  # Apple and SoundCloud, set by hand
     previews = {r: old[r] for r in refs if r in old}
     missing = []
     try:

@@ -211,7 +211,7 @@
   <div class="wrap">
     <p>Open Crate Codes is free to use. The data files are public domain (CC0 1.0). The text of this site and the spec is CC BY 4.0.</p>
     <p>The crosswalk to Discogs, MusicBrainz and Every Noise at Once was checked against each catalogue. The tempo map owes its idea to Glenn McDonald's <a href="https://everynoise.com/">Every Noise at Once</a>.</p>
-    <p>The 30-second previews of the reference tracks play from <a href="https://www.deezer.com/">Deezer</a>.</p>
+    <p>The 30-second previews of the reference tracks play from <a href="https://www.deezer.com/">Deezer</a>, or from <a href="https://music.apple.com/">Apple Music</a> or <a href="https://soundcloud.com/">SoundCloud</a> where Deezer doesn't have the track.</p>
   </div>
 </footer>
 
@@ -419,13 +419,18 @@
       });
     });
 
-    // ---- Previews: 30 seconds of a reference track, from Deezer ----
-    // Deezer's preview links expire within minutes, so previews.json keeps track ids and the links
-    // are asked for as a genre opens. Deezer's API sends no CORS headers, hence JSONP.
+    // ---- Previews: 30 seconds of a reference track, from Deezer, Apple Music or SoundCloud ----
+    // previews.json gives a Deezer track id, or {"apple": id} or {"soundcloud": url} for a track
+    // Deezer doesn't have. Deezer's preview links expire within minutes, so the links are asked for
+    // as a genre opens. Deezer's API sends no CORS headers, hence JSONP; Apple's does.
+    const SITES = { deezer: 'Deezer', apple: 'Apple Music', soundcloud: 'SoundCloud' };
+    const preview = (v) => (v && typeof v === 'object' ? { site: Object.keys(v)[0], id: Object.values(v)[0] } : v ? { site: 'deezer', id: v } : null);
+    // Apple and SoundCloud want a link to the track wherever their audio plays.
+    const trackPage = { apple: (id) => 'https://music.apple.com/song/' + id, soundcloud: (url) => url };
     const audio = new Audio();
-    let now = null; // { b, id } for the preview that's loaded
+    let now = null; // { b, key, player } for the preview that's loaded
     let calls = 0;
-    const links = new Map(); // Deezer id → { p: the lookup, url: once it's back, '' if none }
+    const links = new Map(); // "site:id" → { p: the lookup, url: once it's back, '' if none }
     const jsonp = (url) => new Promise((resolve, reject) => {
       const cb = 'occDeezer' + ++calls;
       const s = document.createElement('script');
@@ -438,15 +443,67 @@
     });
     // A link is good until a minute before the expiry Deezer writes into it.
     const fresh = (url) => { const m = /exp=(\d+)/.exec(url); return !m || m[1] * 1000 - Date.now() > 60000; };
-    function lookUp(id) {
-      const known = links.get(id);
+    const ask = {
+      deezer: (id) => jsonp('https://api.deezer.com/track/' + id).then((t) => t.preview || ''),
+      apple: (id) => getJSON('https://itunes.apple.com/lookup?id=' + id).then((b) => (b.results[0] || {}).previewUrl || ''),
+    };
+    const keyOf = (src) => src.site + ':' + src.id;
+    function lookUp(src) {
+      const key = keyOf(src);
+      const known = links.get(key);
       if (known && (!known.url || fresh(known.url))) return known.p;
       const entry = {};
-      entry.p = jsonp('https://api.deezer.com/track/' + id).then((t) => (entry.url = t.preview || ''));
-      entry.p.catch(() => links.delete(id));
-      links.set(id, entry);
+      entry.p = ask[src.site](src.id).then((url) => (entry.url = url));
+      entry.p.catch(() => links.delete(key));
+      links.set(key, entry);
       return entry.p;
     }
+    // SoundCloud only plays in its own player, so each of its tracks gets a hidden one, made to act
+    // like the Audio element. It starts a minute in and stops 30 seconds later, like a preview.
+    let cloudApi = null;
+    class Cloud extends EventTarget {
+      constructor(url) {
+        super();
+        this.paused = true;
+        this.currentTime = 0;
+        this.duration = 30;
+        cloudApi ||= new Promise((resolve, reject) => {
+          document.head.append(el('script', { src: 'https://w.soundcloud.com/player/api.js', onload: resolve, onerror: reject }));
+        });
+        this.widget = cloudApi.then(() => new Promise((resolve, reject) => {
+          const frame = el('iframe', { hidden: '', allow: 'autoplay', title: 'SoundCloud player', src: 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(url) });
+          document.body.append(frame);
+          const w = SC.Widget(frame), E = SC.Widget.Events;
+          const say = (type) => this.dispatchEvent(new Event(type));
+          w.bind(E.READY, () => resolve(w));
+          w.bind(E.ERROR, () => { reject(new Error('SoundCloud error')); say('error'); });
+          w.bind(E.PLAY, () => { this.paused = false; say('playing'); });
+          w.bind(E.PAUSE, () => { this.paused = true; });
+          w.bind(E.FINISH, () => say('ended'));
+          w.bind(E.PLAY_PROGRESS, (e) => {
+            this.currentTime = e.currentPosition / 1000 - 60;
+            if (this.currentTime < 30) say('timeupdate');
+            else { w.pause(); say('ended'); }
+          });
+        }));
+        this.widget.catch(() => {});
+      }
+      // Settles like Audio's play(). SoundCloud says nothing when the browser won't let it play, so
+      // not starting within a few seconds counts as that.
+      play(from) {
+        return this.widget.then((w) => new Promise((resolve, reject) => {
+          const timer = setTimeout(() => reject(new Error('SoundCloud didn\'t start')), 5000);
+          this.addEventListener('playing', () => { clearTimeout(timer); resolve(); }, { once: true });
+          if (from != null) w.seekTo(from * 1000);
+          w.play();
+        }));
+      }
+      pause() { this.widget.then((w) => w.pause(), () => {}); }
+    }
+    const clouds = new Map(); // url → Cloud
+    const cloud = (url) => clouds.get(url) || clouds.set(url, listen(new Cloud(url))).get(url);
+    // Get a preview ready, so pressing play starts at once.
+    const warm = (src) => (src.site === 'soundcloud' ? cloud(src.id) : lookUp(src).catch(() => {}));
     const show = (b, state) => {
       b.dataset.state = state;
       b.setAttribute('aria-pressed', String(state === 'wait' || state === 'playing'));
@@ -454,43 +511,56 @@
     };
     function stop() {
       if (!now) return;
-      audio.pause();
+      now.player.pause();
       show(now.b, '');
       now = null;
     }
     // A play() that fails after another button was pressed mustn't stop that one.
     const stopIf = (b) => () => { if (now && now.b === b) stop(); };
-    function toggle(b, id) {
+    function toggle(b, src) {
       if (now && now.b === b) {
         if (b.dataset.state === 'wait') stop();
-        else if (audio.paused) audio.play().catch(stopIf(b));
-        else { audio.pause(); show(b, 'paused'); }
+        else if (now.player.paused) now.player.play().catch(stopIf(b));
+        else { now.player.pause(); show(b, 'paused'); }
         return;
       }
       stop();
-      now = { b, id };
+      if (src.site === 'soundcloud') {
+        now = { b, player: cloud(src.id) };
+        show(b, 'wait');
+        now.player.play(60).catch(stopIf(b));
+        return;
+      }
+      const key = keyOf(src);
+      now = { b, key, player: audio };
       show(b, 'wait');
       const begin = (url) => {
         if (!now || now.b !== b) return;
         if (url) { audio.src = url; audio.play().catch(stopIf(b)); return; }
         stop();
         b.disabled = true;
-        b.title = 'No preview on Deezer';
+        b.title = 'No preview on ' + SITES[src.site];
       };
       // Safari only plays from inside the click, so use a link that's already here when there is one.
-      const known = links.get(id);
+      const known = links.get(key);
       if (known && known.url !== undefined && fresh(known.url)) begin(known.url);
-      else lookUp(id).then(begin, stopIf(b));
+      else lookUp(src).then(begin, stopIf(b));
     }
-    audio.addEventListener('playing', () => now && show(now.b, 'playing'));
-    audio.addEventListener('timeupdate', () => now && now.b.style.setProperty('--p', audio.currentTime / (audio.duration || 30)));
-    audio.addEventListener('ended', stop);
-    // Most likely a link that expired: forget it, so the next press asks again.
-    audio.addEventListener('error', () => { if (now) { links.delete(now.id); stop(); } });
-    const playButton = (name, id) => id
+    // The Audio element and the SoundCloud players send the same events; only the loaded one counts.
+    function listen(player) {
+      const mine = (f) => () => { if (now && now.player === player) f(); };
+      player.addEventListener('playing', mine(() => show(now.b, 'playing')));
+      player.addEventListener('timeupdate', mine(() => now.b.style.setProperty('--p', player.currentTime / (player.duration || 30))));
+      player.addEventListener('ended', mine(stop));
+      // From Audio, most likely a link that expired: forget it, so the next press asks again.
+      player.addEventListener('error', mine(() => { links.delete(now.key); stop(); }));
+      return player;
+    }
+    listen(audio);
+    const playButton = (name, src) => src
       ? el('button', {
           type: 'button', class: 'play', 'aria-pressed': 'false', 'aria-label': 'Preview ' + name,
-          title: 'Play 30 seconds from Deezer', onclick: (ev) => toggle(ev.currentTarget, id),
+          title: 'Play 30 seconds from ' + SITES[src.site], onclick: (ev) => toggle(ev.currentTarget, src),
         })
       : el('span', { class: 'play', 'aria-hidden': 'true' });
 
@@ -535,17 +605,18 @@
           // Tools carry no energy, so their references have no chip.
           const m = r.match(/^(.*) \(([1-5])\)$/);
           const name = m ? m[1] : r;
-          return { name, id: previews[name], lvl: m && energy.find((e) => e.level === +m[2]) };
+          return { name, src: preview(previews[name]), lvl: m && energy.find((e) => e.level === +m[2]) };
         });
-        const heard = refs.filter((r) => r.id);
+        const heard = refs.filter((r) => r.src);
         more.append(el('div', {}, [
           el('h4', { text: 'Reference tracks' }),
           refs.length
             ? el('ul', { class: 'refs' }, refs.map((r) => el('li', {}, [
                 // A track without a preview keeps an empty slot, so the list stays lined up.
-                heard.length ? playButton(r.name, r.id) : null,
+                heard.length ? playButton(r.name, r.src) : null,
                 r.lvl ? el('span', { class: 'echip', style: '--lc:' + r.lvl.hex + ';--lfg:' + energyFg(r.lvl.level), text: 'E' + r.lvl.level }) : null,
                 r.name,
+                r.src && trackPage[r.src.site] ? el('a', { class: 'src', href: trackPage[r.src.site](r.src.id), rel: 'noopener', text: SITES[r.src.site] }) : null,
               ])))
             : el('p', { class: 'muted', text: 'No reference tracks yet.' }),
         ]));
@@ -575,9 +646,9 @@
           more,
         ]);
         body.append(details);
-        // Ask Deezer for the preview links as the genre opens, so pressing play starts at once.
+        // Get the previews ready as the genre opens.
         if (heard.length) details.addEventListener('toggle', () => {
-          if (details.open) heard.forEach((r) => lookUp(r.id).catch(() => {}));
+          if (details.open) heard.forEach((r) => warm(r.src));
           else if (now && details.contains(now.b)) stop();
         });
         const haystack = [g.code, g.name, g.short, ...styles.flatMap((s) => [g.code + '.' + s.code, s.name]), ...Object.values(match).flat()]

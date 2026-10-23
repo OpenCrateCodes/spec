@@ -6,6 +6,9 @@
  "Massive Attack – Teardrop": 3129748,
  "Bonobo – Kerala": 135541760,
  "Boards of Canada – Roygbiv": 29373661,
+ "Caribou – Can't Do Without You": {
+  "apple": 1839061755
+ },
  "Jon Hopkins – Open Eye Signal": 2294072235,
  "Nu feat. Jo.Ke – Who Loves the Sun": 741513492,
  "Bedouin – Petra": 3514967301,
@@ -27,6 +30,9 @@
  "Kerri Chandler – Bar A Thym": 2389907235,
  "Frankie Knuckles – Your Love": 1600906202,
  "Crystal Waters – Gypsy Woman (She's Homeless)": 548725752,
+ "Robin S – Show Me Love (Stonebridge Remix)": {
+  "apple": 75020904
+ },
  "Breakbot feat. Irfane – Baby I'm Yours": 57630641,
  "Purple Disco Machine – Hypnotized": 914108092,
  "Todd Terje – Inspector Norse": 1855675487,
@@ -43,10 +49,16 @@
  "Kölsch – Grey": 132972756,
  "Stephan Bodzin – Powers of Ten": 99272952,
  "Röyksopp – What Else Is There? (Trentemøller Remix)": 3286460,
+ "Simian Mobile Disco – Hustler": {
+  "apple": 1443639355
+ },
  "Tiga & Zyntherius – Sunglasses at Night": 2914943901,
  "BUNT. feat. Nate Traveller – Clouds": 2127304097,
  "Fred again.. & The Blessed Madonna – Marea (We've Lost Dancing)": 1239694902,
  "Fred again.. & Swedish House Mafia feat. Future – Turn On the Lights again..": 1832599647,
+ "Ricardo Villalobos – Easy Lee": {
+  "soundcloud": "https://soundcloud.com/gan12003/easy-lee-ricardo-villalobos"
+ },
  "Ricardo Villalobos – Dexter": 3427616301,
  "Audion – Mouth to Mouth": 1043996062,
  "Patrick Topping – Forget": 2202505457,
@@ -158,10 +170,22 @@
  "Us3 – Cantaloop (Flip Fantasia)": 3361453,
  "Marvin Sapp – Never Would Have Made It": 13188617,
  "The Edwin Hawkins Singers – Oh Happy Day": 13176492,
+ "Kirk Franklin & God's Property – Stomp": {
+  "apple": 423931491
+ },
  "Johann Pachelbel – Canon in D": 66613428,
  "Hans Zimmer – Time": 6524423,
  "Felix Mendelssohn – Wedding March": 6762833,
  "Udo Jürgens – Griechischer Wein": 2964730521,
  "Helene Fischer – Atemlos durch die Nacht": 70697237,
- "Goran Bregović – Kalashnikov": 515819672
+ "Goran Bregović – Kalashnikov": 515819672,
+ "The Turntablist – Super Duck Breaks": {
+  "soundcloud": "https://soundcloud.com/user-699128723/super-duck-breaks-side1"
+ },
+ "Skratchy Seal – Super Seal Breaks": {
+  "soundcloud": "https://soundcloud.com/sleezy-general/skratchy-seal-super-seal-side"
+ },
+ "Psychedelic Skratch Bastards – Battle Breaks": {
+  "soundcloud": "https://soundcloud.com/gio-268637410/psychedelic-skratch-bastards"
+ }
 }

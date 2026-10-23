@@ -11,8 +11,8 @@ First public draft.
   MusicBrainz and Every Noise at Once (except indie tech, which none of them list yet), and a BPM
   range (except ambient, open format and tools).
 - **Five energy levels**, rated relative to the track's own genre.
-- **19 labels:** vocals (`#vocal`, `#inst`, `#acapella`), format (`#tool`, `#edit`), rap
-  (`#rap`), lyrics (`#clean`, `#explicit`) and decade (`#1920s` to `#2020s`).
+- **19 labels:** vocals (`#vocal`, `#inst`, `#acapella`), other (`#tool`, `#edit`, `#rap`),
+  lyrics (`#clean`, `#explicit`) and decade (`#1920s` to `#2020s`).
 - **One tag format:** `family code[.style][ En] name` in the Album field. Readers identify tags by
   code and ignore the name.
 - **Families 01–09 run from the slowest typical tempo to the fastest**, so sorting by Album
