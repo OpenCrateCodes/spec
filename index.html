@@ -235,6 +235,16 @@
   const pad = (n) => String(n).padStart(2, '0');
   const slug = (name) => name.toLowerCase().replace(/[^a-z0-9]/g, '');
 
+  // The browser jumps to a link's #anchor before the lists above it are built,
+  // and they push the target down. Jump again once they're in, unless the reader
+  // came back to the page or has already started scrolling.
+  let scrolled = (performance.getEntriesByType('navigation')[0] || {}).type === 'back_forward';
+  ['wheel', 'touchstart', 'keydown'].forEach((t) => addEventListener(t, () => { scrolled = true; }, { once: true, passive: true }));
+  const toAnchor = () => {
+    const t = !scrolled && !location.hash.startsWith('#g-') && location.hash && document.getElementById(location.hash.slice(1));
+    if (t) t.scrollIntoView();
+  };
+
   const getJSON = (url) => fetch(url).then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); });
   // Previews are extra: without previews.json the page just has no play buttons.
   Promise.all([getJSON('occ.json'), getJSON('previews.json').catch(() => ({}))])
@@ -703,6 +713,10 @@
         : [el('dl', { class: 'label-list' }, list.flatMap((l) => [el('dt', {}, [el('code', { text: '#' + l.tag })]), el('dd', { text: l.description })])),
            el('p', { class: 'muted', text: key === 'other' ? 'Use any that apply.' : 'Pick one.' })],
     ].flat())));
+
+    // Web fonts arriving late can shift things again.
+    toAnchor();
+    document.fonts.ready.then(toAnchor);
   }
 })();
 </script>
