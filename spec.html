@@ -122,7 +122,6 @@ name    = display text     ; genre name, then (style name)</pre>
     <ul>
       <li>Genre and style codes are 3 capital letters. Genre codes are unique. Style codes are unique within their genre.</li>
       <li>One style code can sit under several genres when it means the same thing there: <code>MLD</code> is Melodic under Afro House and under Dubstep.</li>
-      <li>A style can reuse a genre's code when it means that genre's sound inside another genre, and then it has that genre's name. <code>DNB.HIP</code> is hip-hop drum &amp; bass, named Hip-Hop like the genre <code>HIP</code>.</li>
       <li>Names never contain brackets, so the only brackets in a tag are around the style's name.</li>
       <li><b>Codes are permanent.</b> A published code keeps its meaning and is never reused. A retired code is marked <code>deprecated</code>, with <code>use</code> naming its replacement, and stays readable.</li>
       <li><b>Family numbers are permanent.</b> Moving a genre to another family is a major change (see <a href="#versions">Versions</a>).</li>
@@ -155,12 +154,12 @@ name    = display text     ; genre name, then (style name)</pre>
       <thead><tr><th scope="col">Group</th><th scope="col">Labels</th><th scope="col">Meaning</th></tr></thead>
       <tbody>
         <tr><td>Vocals</td><td><code>#vocal</code> <code>#inst</code> <code>#acapella</code></td><td>A vocal carries it; no lead vocal; vocal only</td></tr>
-        <tr><td>None</td><td><code>#tool</code> <code>#edit</code></td><td>Made for mixing (loops, drums, intros, FX); a DJ edit, bootleg or rework</td></tr>
+        <tr><td>None</td><td><code>#tool</code> <code>#edit</code> <code>#rap</code></td><td>Made for mixing (loops, drums, intros, FX); a DJ edit, bootleg or rework; has rapping or MC vocals</td></tr>
         <tr><td>Lyrics</td><td><code>#clean</code> <code>#explicit</code></td><td>Radio-safe; has explicit lyrics</td></tr>
         <tr><td>Decade</td><td><code>#1920s</code> to <code>#2020s</code></td><td>When the song is from: the original, not the remix</td></tr>
       </tbody>
     </table>
-    <p>An edit keeps the genre of the music it edits, and adds <code>#edit</code>. An acapella keeps its genre, and adds <code>#acapella</code>. Neither is a genre of its own.</p>
+    <p>An edit keeps the genre of the music it edits, and adds <code>#edit</code>. An acapella keeps its genre, and adds <code>#acapella</code>. Neither is a genre of its own. Nor is rapping over a club genre: a jump-up track with an MC is <code>DNB.JMP</code> and <code>#rap</code>, not <code>HIP</code>.</p>
 
     <h2 id="searching">9. Searching</h2>
     <p>Smart playlists and searches <span class="must">should</span> include the family number with the code. On its own, a code also finds untagged tracks whose release title contains it, like MIN in "Mind".</p>

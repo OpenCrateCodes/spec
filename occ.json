@@ -397,10 +397,6 @@
       {
        "code": "SFL",
        "name": "Soulful"
-      },
-      {
-       "code": "HIP",
-       "name": "Hip-Hop"
       }
      ],
      "references": [
@@ -823,10 +819,6 @@
       {
        "code": "SPG",
        "name": "Speed Garage"
-      },
-      {
-       "code": "HIP",
-       "name": "Hip-Hop"
       }
      ],
      "references": [
@@ -1363,10 +1355,6 @@
       {
        "code": "MLD",
        "name": "Melodic"
-      },
-      {
-       "code": "HIP",
-       "name": "Hip-Hop"
       }
      ],
      "references": [
@@ -1456,10 +1444,6 @@
       {
        "code": "JGL",
        "name": "Jungle"
-      },
-      {
-       "code": "HIP",
-       "name": "Hip-Hop"
       }
      ],
      "references": [
@@ -1596,7 +1580,7 @@
      "code": "HIP",
      "name": "Hip-Hop",
      "family": "Open Format",
-     "definition": "Rap and its production styles, old school to drill. Hip-hop inside a club genre is that genre's .HIP style instead, like DNB.HIP.",
+     "definition": "Rap and its production styles, old school to drill. A club track with rapping keeps its club genre and gets #rap instead.",
      "not": [
       "TRP",
       "RNB"
@@ -2316,6 +2300,11 @@
    "tag": "edit",
    "name": "Edit",
    "description": "A DJ edit, bootleg or rework of another track."
+  },
+  {
+   "tag": "rap",
+   "name": "Rap",
+   "description": "Has rapping or MC vocals, in any genre."
   },
   {
    "tag": "clean",

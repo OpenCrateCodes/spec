@@ -74,7 +74,6 @@ def build(path):
     # Genres and styles.
     genres = data.get("genre", [])
     genre_codes = [g["code"] for g in genres]
-    genre_names = {g["code"]: g["name"] for g in genres}
     labels = {l["tag"] for l in data.get("label", [])}
     codes = {}  # "DNB" or "DNB.LIQ" -> (genre, style or None)
     for g in genres:
@@ -95,10 +94,6 @@ def build(path):
                 err(f"style {c}.{sc}: codes are 3 capital letters and don't start with X")
             if sc in seen:
                 err(f"style {c}.{sc} is listed twice")
-            # Reusing a genre's code means that genre's sound inside this one (DNB.HIP), so the
-            # names must agree.
-            if sc in genre_names and s["name"] != genre_names[sc]:
-                err(f"style {c}.{sc}: reuses genre code {sc}, so it must be named \"{genre_names[sc]}\"")
             seen.add(sc)
             codes[f"{c}.{sc}"] = (g, s)
 

@@ -619,18 +619,18 @@
     const groupNames = { vocals: 'Vocals', lyrics: 'Lyrics', era: 'Decade' };
     const groups = new Map();
     occ.labels.forEach((l) => {
-      const key = l.group || 'form';
+      const key = l.group || 'other';
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(l);
     });
     // Decades share one description; the other groups describe each label.
     groups.forEach((list, key) => $('label-groups').append(el('div', {}, [
-      el('h3', { text: groupNames[key] || 'Format' }),
+      el('h3', { text: groupNames[key] || 'Other' }),
       key === 'era'
         ? [el('ul', {}, list.map((l) => el('li', { title: l.name, text: '#' + l.tag }))),
            el('p', { class: 'muted', text: 'The decade the song is from: the original, not the remix. Pick one.' })]
         : [el('dl', { class: 'label-list' }, list.flatMap((l) => [el('dt', {}, [el('code', { text: '#' + l.tag })]), el('dd', { text: l.description })])),
-           el('p', { class: 'muted', text: key === 'form' ? 'Use any that apply.' : 'Pick one.' })],
+           el('p', { class: 'muted', text: key === 'other' ? 'Use any that apply.' : 'Pick one.' })],
     ].flat())));
   }
 })();

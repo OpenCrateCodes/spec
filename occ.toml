@@ -127,9 +127,6 @@ hex = "#9C9CAB"
 # catalogues, each checked against that catalogue: Discogs styles, MusicBrainz genres and Every
 # Noise at Once genres. `references` are "Artist – Title (energy)"; DJ tools have no energy, so
 # theirs have none.
-#
-# A style can reuse a genre's code when it means that genre's sound inside another one (DNB.HIP is
-# hip-hop drum & bass); it then has the same name.
 
 # 01 Chill
 [[genre]]
@@ -286,7 +283,7 @@ family = "House"
 bpm = "120–126"
 definition = "The four-to-the-floor core: piano, vocals and grooves from Chicago and New York onward."
 not = ["DHS", "FNK", "JCK"]
-styles = [{ code = "ACD", name = "Acid" }, { code = "SFL", name = "Soulful" }, { code = "HIP", name = "Hip-Hop" }]
+styles = [{ code = "ACD", name = "Acid" }, { code = "SFL", name = "Soulful" }]
 references = [
   "Frankie Knuckles – Your Love (3)",
   "Crystal Waters – Gypsy Woman (She's Homeless) (4)",
@@ -486,7 +483,7 @@ family = "Breaks & UK"
 bpm = "128–140"
 definition = "Shuffled, swung UK club music: 2-step skips, chopped vocals, speed garage and bassline."
 not = ["BHS", "BRK"]
-styles = [{ code = "STP", name = "2-Step" }, { code = "BSL", name = "Bassline" }, { code = "SPG", name = "Speed Garage" }, { code = "HIP", name = "Hip-Hop" }]
+styles = [{ code = "STP", name = "2-Step" }, { code = "BSL", name = "Bassline" }, { code = "SPG", name = "Speed Garage" }]
 references = [
   "Double 99 – Ripgroove (5)",
   "Todd Edwards – Saved My Life (2)",
@@ -699,7 +696,7 @@ family = "Bass"
 bpm = "140–150"
 definition = "Half-time drops with aggressive, designed bass: brostep, riddim, tearout, melodic."
 not = ["DDG", "TRP"]
-styles = [{ code = "RDM", name = "Riddim" }, { code = "MLD", name = "Melodic" }, { code = "HIP", name = "Hip-Hop" }]
+styles = [{ code = "RDM", name = "Riddim" }, { code = "MLD", name = "Melodic" }]
 references = [
   "Flight Facilities feat. Giselle – Crave You (Adventure Club Remix) (2)",
   "Flux Pavilion – I Can't Stop (4)",
@@ -733,7 +730,7 @@ family = "Bass"
 bpm = "165–178"
 definition = "Fast breakbeats over heavy sub-bass, from liquid and rollers to jump-up, neuro and jungle."
 not = ["DBS"]
-styles = [{ code = "LIQ", name = "Liquid" }, { code = "ROL", name = "Rollers" }, { code = "JMP", name = "Jump-up" }, { code = "NRF", name = "Neurofunk" }, { code = "JGL", name = "Jungle" }, { code = "HIP", name = "Hip-Hop" }]
+styles = [{ code = "LIQ", name = "Liquid" }, { code = "ROL", name = "Rollers" }, { code = "JMP", name = "Jump-up" }, { code = "NRF", name = "Neurofunk" }, { code = "JGL", name = "Jungle" }]
 references = [
   "Goldie – Inner City Life (2)",
   "High Contrast – If We Ever (3)",
@@ -783,7 +780,7 @@ match.everynoise = ["big room", "edm", "future house", "electro house", "complex
 code = "HIP"
 name = "Hip-Hop"
 family = "Open Format"
-definition = "Rap and its production styles, old school to drill. Hip-hop inside a club genre is that genre's .HIP style instead, like DNB.HIP."
+definition = "Rap and its production styles, old school to drill. A club track with rapping keeps its club genre and gets #rap instead."
 not = ["TRP", "RNB"]
 styles = [{ code = "OSK", name = "Old School" }, { code = "DRL", name = "Drill" }]
 references = [
@@ -1081,6 +1078,11 @@ description = "Made for mixing rather than playing on its own: loops, drum track
 tag = "edit"
 name = "Edit"
 description = "A DJ edit, bootleg or rework of another track."
+
+[[label]]
+tag = "rap"
+name = "Rap"
+description = "Has rapping or MC vocals, in any genre."
 
 [[label]]
 tag = "clean"
