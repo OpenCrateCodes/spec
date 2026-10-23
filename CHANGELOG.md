@@ -8,7 +8,8 @@ First public draft.
   format (hip-hop, R&B, pop, Latin, Caribbean, African, country, rock, funk and soul, indie,
   K-pop, South Asian, Arabic, jazz, gospel, classical, world) and DJ tools.
 - **Every genre has** a definition, the genres it's often confused with, a crosswalk to Discogs,
-  MusicBrainz and Every Noise at Once, and a BPM range (except ambient, open format and tools).
+  MusicBrainz and Every Noise at Once (except indie tech, which none of them list yet), and a BPM
+  range (except ambient, open format and tools).
 - **Five energy levels**, rated relative to the track's own genre.
 - **19 labels:** vocals (`#vocal`, `#inst`, `#acapella`), format (`#tool`, `#edit`), rap
   (`#rap`), lyrics (`#clean`, `#explicit`) and decade (`#1920s` to `#2020s`).

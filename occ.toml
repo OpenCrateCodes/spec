@@ -249,6 +249,7 @@ name = "Brazilian Funk"
 family = "Afro & Organic"
 bpm = "125–150"
 definition = "Baile funk from Rio and São Paulo: tamborzão and beatbox drums, chopped vocals, heavy bass."
+not = ["LTN", "BCL"]
 references = [
   "MC Marcinho – Glamurosa (2)",
   "MC Fioti – Bum Bum Tam Tam (4)",
@@ -877,6 +878,7 @@ code = "CTY"
 name = "Country"
 family = "Open Format"
 definition = "Country songs, from line-dance staples to country pop."
+not = ["POP", "WLD"]
 references = [
   "Luke Combs – Fast Car (2)",
   "Billy Ray Cyrus – Achy Breaky Heart (4)",
@@ -953,6 +955,7 @@ code = "DSI"
 name = "South Asian"
 family = "Open Format"
 definition = "Music from South Asia and its diaspora: Bollywood and filmi songs, bhangra, desi hip-hop."
+not = ["ARB", "WLD"]
 styles = [{ code = "BLW", name = "Bollywood" }, { code = "BHG", name = "Bhangra" }]
 references = [
   "Arijit Singh – Tum Hi Ho (1)",
@@ -968,6 +971,7 @@ code = "ARB"
 name = "Arabic / Middle Eastern"
 family = "Open Format"
 definition = "Pop and party music from the Arab world, North Africa and Turkey: Arab pop, khaliji, raï, mahraganat."
+not = ["DSI", "WLD"]
 references = [
   "Amr Diab – Tamally Maak (2)",
   "Khaled – Didi (4)",
@@ -997,6 +1001,7 @@ code = "GSP"
 name = "Gospel"
 family = "Open Format"
 definition = "Gospel and contemporary Christian music."
+not = ["SOL", "RNB"]
 references = [
   "Marvin Sapp – Never Would Have Made It (2)",
   "The Edwin Hawkins Singers – Oh Happy Day (3)",
@@ -1011,6 +1016,7 @@ code = "CLS"
 name = "Classical / Soundtrack"
 family = "Open Format"
 definition = "Classical, modern classical and film scores: ceremonies, entrances, intros."
+not = ["AMB"]
 references = [
   "Johann Pachelbel – Canon in D (1)",
   "Hans Zimmer – Time (3)",
@@ -1025,6 +1031,7 @@ code = "WLD"
 name = "World / Folk"
 family = "Open Format"
 definition = "Folk and regional party music the other genres don't cover: schlager, Balkan, polka."
+not = ["POP", "ARB", "CTY"]
 styles = [{ code = "SCH", name = "Schlager" }, { code = "BLK", name = "Balkan" }]
 references = [
   "Udo Jürgens – Griechischer Wein (2)",
@@ -1042,12 +1049,16 @@ name = "DJ Tools"
 short = "Tools"
 family = "Utility"
 definition = "Material with no genre of its own: battle tools, loops, FX and sound beds. A drum loop that belongs to a genre gets that genre and the #tool label instead, and an edit or acapella keeps its genre and gets #edit or #acapella."
+not = ["HIP", "BRK"]
 styles = [{ code = "BTL", name = "Battle Tools" }, { code = "LPS", name = "Loops" }]
 references = [
   "The Turntablist – Super Duck Breaks",
   "Skratchy Seal – Super Seal Breaks",
   "Psychedelic Skratch Bastards – Battle Breaks",
 ]
+match.discogs = ["DJ Battle Tool"]
+match.musicbrainz = ["battle record", "sound effects"]
+match.everynoise = ["sound effects"]
 
 # Labels: yes/no facts about a track, written into its Comment tag as #tag (e.g. "#vocal #1990s").
 # Labels in the same group exclude each other.
